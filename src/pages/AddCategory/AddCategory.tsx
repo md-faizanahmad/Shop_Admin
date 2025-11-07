@@ -1,82 +1,126 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
 import type { Category } from "@/types/category";
 import CategoryForm from "./CategoryForm";
 import CategoryTable from "./CategoryTable";
+import type { AxiosError } from "axios";
 
-const AddCategory: React.FC = () => {
+export default function AddCategory() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<string>("");
 
-  const API_BASE = `${import.meta.env.VITE_API_URL}/mystoreapi/categories`;
+  const API_BASE = "/mystoreapi/categories";
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get(API_BASE, { withCredentials: true });
-      if (res.data.success) {
-        setCategories(res.data.categories);
-      }
+      const res = await api.get<{ success: boolean; categories: Category[] }>(
+        API_BASE
+      );
+      if (res.data.success) setCategories(res.data.categories);
+      else setCategories([]);
     } catch (err) {
-      console.error("Error fetching categories:", err);
+      const e = err as AxiosError<{ message?: string }>;
+      console.error(
+        "Error fetching categories:",
+        e.response?.data?.message ?? e.message
+      );
+      setCategories([]);
     }
+  };
+
+  useEffect(() => {
+    void fetchCategories();
+  }, []);
+
+  const resetForm = () => {
+    setName("");
+    setDescription("");
+    setEditingId(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setMessage("");
+
     try {
       if (editingId) {
-        await axios.put(
-          `${API_BASE}/${editingId}`,
-          { name, description },
-          { withCredentials: true }
-        );
+        await api.put(`${API_BASE}/${editingId}`, { name, description });
+        setMessage("✅ Category updated");
       } else {
-        await axios.post(
-          API_BASE,
-          { name, description },
-          { withCredentials: true }
-        );
+        await api.post(API_BASE, { name, description });
+        setMessage("✅ Category added");
       }
-      setName("");
-      setDescription("");
-      setEditingId(null);
+      resetForm();
       await fetchCategories();
     } catch (err) {
-      console.error("Error saving category:", err);
+      const e = err as AxiosError<{ message?: string }>;
+      setMessage(e.response?.data?.message ?? "❌ Operation failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleEdit = (category: Category) => {
     setName(category.name);
-    setDescription(category.description || "");
+    setDescription(category.description ?? "");
     setEditingId(category._id);
+    setMessage("");
+  };
+
+  const handleCancelEdit = () => {
+    resetForm();
+    setMessage("");
   };
 
   const handleDelete = async (id: string) => {
+    if (!confirm("Delete this category?")) return;
+    setLoading(true);
+    setMessage("");
     try {
-      await axios.delete(`${API_BASE}/${id}`, { withCredentials: true });
+      await api.delete(`${API_BASE}/${id}`);
+      setMessage("🗑️ Category deleted");
       await fetchCategories();
     } catch (err) {
-      console.error("Error deleting category:", err);
+      const e = err as AxiosError<{ message?: string }>;
+      setMessage(e.response?.data?.message ?? "❌ Delete failed");
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
   return (
     <div className="p-4 sm:p-6 md:p-8">
-      <h2 className="text-2xl font-semibold mb-6">Manage Categories</h2>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
+        <h2 className="text-2xl font-semibold">Manage Categories</h2>
+        {message && (
+          <span
+            className={`text-sm ${
+              message.startsWith("✅") || message.startsWith("🗑️")
+                ? "text-green-600"
+                : "text-red-600"
+            }`}
+          >
+            {message}
+          </span>
+        )}
+      </div>
+
       <CategoryForm
         name={name}
         description={description}
         setName={setName}
         setDescription={setDescription}
         onSubmit={handleSubmit}
+        loading={loading}
+        isEditing={Boolean(editingId)}
+        onCancelEdit={handleCancelEdit}
       />
+
       <CategoryTable
         categories={categories}
         onEdit={handleEdit}
@@ -84,6 +128,4 @@ const AddCategory: React.FC = () => {
       />
     </div>
   );
-};
-
-export default AddCategory;
+}

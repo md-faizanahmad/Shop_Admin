@@ -13,8 +13,9 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     { name: "Dashboard", icon: Home, path: "/dashboard" },
     { name: "Add Product", icon: PackagePlus, path: "/dashboard/add-product" },
     { name: "Add Category", icon: FolderPlus, path: "/dashboard/add-category" },
+    { name: "Product List", icon: User, path: "/dashboard/productlist" },
     { name: "AI Tools", icon: Brain, path: "/dashboard/ai-tools" },
-    { name: "Profile", icon: User, path: "/dashboard/profile" },
+    // { name: "Profile", icon: User, path: "/dashboard/profile" },
   ];
 
   return (

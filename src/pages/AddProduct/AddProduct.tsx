@@ -1,5 +1,6 @@
-import { useEffect, useState, type FormEvent, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import axios from "axios";
+import ProductTable from "./ProductTable";
 
 interface Category {
   _id: string;
@@ -12,7 +13,7 @@ interface ProductForm {
   price: number;
   stock: number;
   category: string;
-  image: File | null;
+  imageFile: File | null;
 }
 
 export default function AddProduct() {
@@ -23,15 +24,17 @@ export default function AddProduct() {
     price: 0,
     stock: 0,
     category: "",
-    image: null,
+    imageFile: null,
   });
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const API_URL = import.meta.env.VITE_API_URL;
+  const API_URLL = "https://my-store-backend-gamma.vercel.app/";
+  const API_URL = import.meta.env.VITE_API_URL || API_URLL;
   const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
   const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
-  // 🟢 Fetch categories on load
+  // Load categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -46,7 +49,7 @@ export default function AddProduct() {
     fetchCategories();
   }, [API_URL]);
 
-  // 🟢 Handle text/number inputs
+  // Handle text inputs
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
@@ -57,44 +60,46 @@ export default function AddProduct() {
     }));
   };
 
-  // 🟢 Handle image selection
+  // Handle image input
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) setForm((prev) => ({ ...prev, image: file }));
+    setForm((prev) => ({ ...prev, imageFile: file || null }));
   };
 
-  // 🟢 Handle submit
+  // Submit form
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (
       !form.name ||
       !form.description ||
       !form.price ||
-      !form.stock ||
       !form.category ||
-      !form.image
+      !form.stock ||
+      !form.imageFile
     ) {
-      alert("Please fill all fields before submitting");
+      setMessage("Please fill all fields and upload an image.");
       return;
     }
 
     try {
       setLoading(true);
+      setMessage("Uploading image...");
 
-      // 1️⃣ Upload image to Cloudinary
-      const formData = new FormData();
-      formData.append("file", form.image);
-      formData.append("upload_preset", UPLOAD_PRESET);
+      // Upload to Cloudinary
+      const data = new FormData();
+      data.append("file", form.imageFile);
+      data.append("upload_preset", UPLOAD_PRESET);
 
-      const cloudinaryRes = await axios.post(
+      const uploadRes = await axios.post(
         `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-        formData
+        data
       );
 
-      const imageUrl: string = cloudinaryRes.data.secure_url;
+      const imageUrl: string = uploadRes.data.secure_url;
 
-      // 2️⃣ Send product data to backend
-      await axios.post(
+      // Send product to backend
+      const res = await axios.post(
         `${API_URL}/mystoreapi/products`,
         {
           name: form.name,
@@ -102,26 +107,27 @@ export default function AddProduct() {
           price: form.price,
           stock: form.stock,
           category: form.category,
-          imageUrl,
+          imageUrl, // ✅ correct key
         },
         { withCredentials: true }
       );
 
-      alert("✅ Product added successfully!");
+      setMessage(res.data.message || "✅ Product added successfully!");
       setForm({
         name: "",
         description: "",
         price: 0,
         stock: 0,
         category: "",
-        image: null,
+        imageFile: null,
       });
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        console.error("❌ Error saving product:", err.response?.data);
-        alert(err.response?.data?.message || "Failed to add product");
+        console.error("Error saving product:", err.response?.data);
+        setMessage(err.response?.data?.message || "Error adding product");
       } else {
-        console.error("❌ Unexpected error:", err);
+        console.error("Unexpected error:", err);
+        setMessage("Unexpected error occurred");
       }
     } finally {
       setLoading(false);
@@ -129,22 +135,17 @@ export default function AddProduct() {
   };
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 max-w-2xl mx-auto">
-      <h2 className="text-xl md:text-2xl font-semibold mb-4 text-center">
-        Add New Product
-      </h2>
+    <div className="max-w-full mx-auto mt-8 p-6 bg-white shadow rounded-2xl">
+      <h2 className="text-2xl font-bold text-center mb-6">Add Product</h2>
+      <ProductTable />
 
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-4 bg-white shadow-lg rounded-2xl p-4 sm:p-6"
-      >
+      <form onSubmit={handleSubmit} className="flex max-w-2x flex-col gap-4">
         <input
-          type="text"
           name="name"
           placeholder="Product Name"
           value={form.name}
           onChange={handleChange}
-          className="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border rounded-lg p-2"
         />
 
         <textarea
@@ -152,7 +153,7 @@ export default function AddProduct() {
           placeholder="Description"
           value={form.description}
           onChange={handleChange}
-          className="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border rounded-lg p-2"
         />
 
         <input
@@ -161,7 +162,7 @@ export default function AddProduct() {
           placeholder="Price"
           value={form.price || ""}
           onChange={handleChange}
-          className="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border rounded-lg p-2"
         />
 
         <input
@@ -170,14 +171,14 @@ export default function AddProduct() {
           placeholder="Stock"
           value={form.stock || ""}
           onChange={handleChange}
-          className="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border rounded-lg p-2"
         />
 
         <select
           name="category"
           value={form.category}
           onChange={handleChange}
-          className="border rounded-lg p-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border rounded-lg p-2"
         >
           <option value="">Select Category</option>
           {categories.map((cat) => (
@@ -187,12 +188,7 @@ export default function AddProduct() {
           ))}
         </select>
 
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          className="border rounded-lg p-2"
-        />
+        <input type="file" accept="image/*" onChange={handleImageChange} />
 
         <button
           type="submit"
@@ -202,6 +198,10 @@ export default function AddProduct() {
           {loading ? "Uploading..." : "Add Product"}
         </button>
       </form>
+
+      {message && (
+        <p className="mt-4 text-center text-gray-700 font-medium">{message}</p>
+      )}
     </div>
   );
 }

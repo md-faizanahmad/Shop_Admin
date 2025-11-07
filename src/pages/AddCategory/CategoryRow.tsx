@@ -1,4 +1,3 @@
-import React from "react";
 import type { Category } from "@/types/category";
 import { Edit, Trash2 } from "lucide-react";
 
@@ -8,33 +7,35 @@ interface CategoryRowProps {
   onDelete: (id: string) => void;
 }
 
-const CategoryRow: React.FC<CategoryRowProps> = ({
+export default function CategoryRow({
   category,
   onEdit,
   onDelete,
-}) => {
+}: CategoryRowProps) {
   return (
     <tr className="border-b hover:bg-gray-50 transition">
       <td className="p-2 md:p-3">{category.name}</td>
       <td className="p-2 md:p-3 hidden sm:table-cell">
         {category.description || "-"}
       </td>
-      <td className="p-2 md:p-3 flex gap-2 justify-center">
-        <button
-          onClick={() => onEdit(category)}
-          className="text-blue-500 hover:text-blue-700"
-        >
-          <Edit size={18} />
-        </button>
-        <button
-          onClick={() => onDelete(category._id)}
-          className="text-red-500 hover:text-red-700"
-        >
-          <Trash2 size={18} />
-        </button>
+      <td className="p-2 md:p-3 text-center">
+        <div className="flex gap-3 justify-center">
+          <button
+            onClick={() => onEdit(category)}
+            className="text-blue-600 hover:text-blue-800"
+            title="Edit"
+          >
+            <Edit size={18} />
+          </button>
+          <button
+            onClick={() => onDelete(category._id)}
+            className="text-red-600 hover:text-red-800"
+            title="Delete"
+          >
+            <Trash2 size={18} />
+          </button>
+        </div>
       </td>
     </tr>
   );
-};
-
-export default CategoryRow;
+}

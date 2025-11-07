@@ -1,38 +1,28 @@
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { api } from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
+import axios from "axios";
 
-// interface LoginResponse {
-//   success: boolean;
-//   admin: {
-//     id: string;
-//     name: string;
-//     email: string;
-//   };
-// }
-
-const Login = () => {
+export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
     try {
-      const res = await axios.post(
-        `${API_URL}/mystoreapi/admin/login`,
-        { email, password },
-        { withCredentials: true } // ⚠️ Important for cookies
-      );
-
-      login(null, res.data.admin);
+      // Server sets HttpOnly cookie; response also returns admin payload for UI.
+      const { data } = await api.post("/mystoreapi/admin/login", {
+        email,
+        password,
+      });
+      // Expect: { success: true, admin: { id, name, email } }
+      login(data?.admin ?? null);
       navigate("/dashboard");
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -76,6 +66,4 @@ const Login = () => {
       </form>
     </div>
   );
-};
-
-export default Login;
+}
