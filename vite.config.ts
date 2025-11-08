@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [tailwindcss(), react()],
   server: {
     proxy: {
-      "/api": "http://localhost:3000", // backend server
+      "/api": "https://my-store-backend-gamma.vercel.app/", // backend server
     },
   },
   resolve: {

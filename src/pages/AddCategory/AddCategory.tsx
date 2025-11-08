@@ -1,65 +1,76 @@
-import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import React, { useEffect, useState, useTransition } from "react";
+import axios from "axios";
 import type { Category } from "@/types/category";
 import CategoryForm from "./CategoryForm";
 import CategoryTable from "./CategoryTable";
-import type { AxiosError } from "axios";
+import ConfirmDialog from "@/ui/ConfirmDialog";
 
 export default function AddCategory() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
+
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string>("");
+  const [toast, setToast] = useState<{
+    type: "ok" | "err";
+    msg: string;
+  } | null>(null);
+  const [isPending, startTransition] = useTransition();
 
-  const API_BASE = "/mystoreapi/categories";
+  const API_BASE = `${import.meta.env.VITE_API_URL}/mystoreapi/categories`;
 
-  const fetchCategories = async () => {
-    try {
-      const res = await api.get<{ success: boolean; categories: Category[] }>(
-        API_BASE
-      );
-      if (res.data.success) setCategories(res.data.categories);
-      else setCategories([]);
-    } catch (err) {
-      const e = err as AxiosError<{ message?: string }>;
-      console.error(
-        "Error fetching categories:",
-        e.response?.data?.message ?? e.message
-      );
-      setCategories([]);
-    }
-  };
+  function showToast(type: "ok" | "err", msg: string) {
+    setToast({ type, msg });
+    window.setTimeout(() => setToast(null), 2200);
+  }
+
+  async function fetchCategories() {
+    const res = await axios.get(API_BASE, { withCredentials: true });
+    if (res.data?.success) setCategories(res.data.categories);
+    else if (Array.isArray(res.data)) setCategories(res.data);
+    else setCategories([]);
+  }
 
   useEffect(() => {
-    void fetchCategories();
-  }, []);
+    startTransition(() => {
+      fetchCategories().catch(() => {});
+    });
+  }, []); // eslint-disable-line
 
-  const resetForm = () => {
-    setName("");
-    setDescription("");
-    setEditingId(null);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    setMessage("");
-
     try {
       if (editingId) {
-        await api.put(`${API_BASE}/${editingId}`, { name, description });
-        setMessage("✅ Category updated");
+        await axios.put(
+          `${API_BASE}/${editingId}`,
+          { name, description },
+          { withCredentials: true }
+        );
+        showToast("ok", "Category updated");
       } else {
-        await api.post(API_BASE, { name, description });
-        setMessage("✅ Category added");
+        await axios.post(
+          API_BASE,
+          { name, description },
+          { withCredentials: true }
+        );
+        showToast("ok", "Category added");
       }
-      resetForm();
-      await fetchCategories();
+      setName("");
+      setDescription("");
+      setEditingId(null);
+      startTransition(() => {
+        fetchCategories().catch(() => {});
+      });
     } catch (err) {
-      const e = err as AxiosError<{ message?: string }>;
-      setMessage(e.response?.data?.message ?? "❌ Operation failed");
+      if (axios.isAxiosError(err)) {
+        showToast("err", err.response?.data?.message ?? "Action failed");
+      } else {
+        showToast("err", "Unexpected error");
+      }
     } finally {
       setLoading(false);
     }
@@ -69,46 +80,47 @@ export default function AddCategory() {
     setName(category.name);
     setDescription(category.description ?? "");
     setEditingId(category._id);
-    setMessage("");
   };
 
-  const handleCancelEdit = () => {
-    resetForm();
-    setMessage("");
-  };
+  const onAskDelete = (id: string) => setConfirmId(id);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this category?")) return;
-    setLoading(true);
-    setMessage("");
+  const confirmDelete = async () => {
+    if (!confirmId) return;
+    const id = confirmId;
+
+    const prev = categories;
+    const next = prev.filter((c) => c._id !== id);
+    setCategories(next);
+    setDeletingId(id);
+    setConfirmId(null);
+
     try {
-      await api.delete(`${API_BASE}/${id}`);
-      setMessage("🗑️ Category deleted");
-      await fetchCategories();
+      await axios.delete(`${API_BASE}/${id}`, { withCredentials: true });
+      showToast("ok", "Category deleted");
     } catch (err) {
-      const e = err as AxiosError<{ message?: string }>;
-      setMessage(e.response?.data?.message ?? "❌ Delete failed");
+      setCategories(prev);
+      if (axios.isAxiosError(err)) {
+        showToast("err", err.response?.data?.message ?? "Delete failed");
+      } else {
+        showToast("err", "Unexpected error");
+      }
     } finally {
-      setLoading(false);
+      setDeletingId(null);
     }
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setName("");
+    setDescription("");
   };
 
   return (
     <div className="p-4 sm:p-6 md:p-8">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
-        <h2 className="text-2xl font-semibold">Manage Categories</h2>
-        {message && (
-          <span
-            className={`text-sm ${
-              message.startsWith("✅") || message.startsWith("🗑️")
-                ? "text-green-600"
-                : "text-red-600"
-            }`}
-          >
-            {message}
-          </span>
-        )}
-      </div>
+      <h2 className="text-2xl font-semibold mb-6">
+        Manage Categories{" "}
+        {isPending && <span className="text-xs text-gray-400">(loading…)</span>}
+      </h2>
 
       <CategoryForm
         name={name}
@@ -118,14 +130,37 @@ export default function AddCategory() {
         onSubmit={handleSubmit}
         loading={loading}
         isEditing={Boolean(editingId)}
-        onCancelEdit={handleCancelEdit}
+        onCancelEdit={cancelEdit}
       />
 
       <CategoryTable
         categories={categories}
         onEdit={handleEdit}
-        onDelete={handleDelete}
+        onAskDelete={onAskDelete}
+        deletingId={deletingId}
       />
+
+      <ConfirmDialog
+        open={!!confirmId}
+        title="Delete category?"
+        description="This action cannot be undone."
+        confirmText="Delete"
+        onConfirm={confirmDelete}
+        onCancel={() => setConfirmId(null)}
+      />
+
+      {toast && (
+        <div
+          className={`fixed bottom-4 right-4 px-3 py-2 rounded text-sm shadow-md ${
+            toast.type === "ok"
+              ? "bg-emerald-600 text-white"
+              : "bg-red-600 text-white"
+          }`}
+          role="status"
+        >
+          {toast.msg}
+        </div>
+      )}
     </div>
   );
 }
