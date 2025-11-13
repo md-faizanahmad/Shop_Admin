@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 .vercel
+dist
+.vite
+.DS_Store
+.vercel

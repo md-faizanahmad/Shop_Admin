@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { Menu, Sun, Moon, LogOut } from "lucide-react";
+import { Menu, LogOut } from "lucide-react";
 
 interface HeaderProps {
   onToggleSidebar: () => void;
@@ -8,10 +8,7 @@ interface HeaderProps {
 
 const Header = ({ onToggleSidebar }: HeaderProps) => {
   const { admin, logout } = useAuth();
-  const [currentTime, setCurrentTime] = useState<string>("");
-  const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("theme") === "dark"
-  );
+  const [currentTime, setCurrentTime] = useState("");
 
   // Time updater
   useEffect(() => {
@@ -28,21 +25,11 @@ const Header = ({ onToggleSidebar }: HeaderProps) => {
       );
     };
     update();
-    const interval = setInterval(update, 1000);
-    return () => clearInterval(interval);
+    const timer = setInterval(update, 1000);
+    return () => clearInterval(timer);
   }, []);
 
-  // Theme toggle
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [darkMode]);
-
+  // Greeting Text
   const greeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return "Good Morning";
@@ -51,52 +38,34 @@ const Header = ({ onToggleSidebar }: HeaderProps) => {
   };
 
   return (
-    <header className="flex justify-between items-center px-4 py-2 sm:py-3 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm transition-colors duration-300">
-      {/* Left Section */}
-      <div className="flex items-center gap-2 sm:gap-4">
-        {/* Sidebar Toggle Button */}
-        <button
-          onClick={onToggleSidebar}
-          className="md:hidden text-gray-800 dark:text-gray-100"
-          aria-label="Toggle Menu"
-        >
+    <header
+      className="flex justify-between items-center px-4 py-3 
+      bg-white border-b border-gray-200 shadow-sm"
+    >
+      {/* Left side */}
+      <div className="flex items-center gap-4">
+        {/* Sidebar Toggle */}
+        <button onClick={onToggleSidebar} className="md:hidden text-gray-800">
           <Menu className="w-6 h-6" />
         </button>
 
-        {/* Greeting + Time */}
+        {/* Greeting */}
         <div>
-          <h2 className="text-sm sm:text-lg font-semibold text-gray-800 dark:text-gray-100 truncate">
+          <h2 className="text-lg font-semibold text-gray-800">
             {greeting()}, {admin?.name || "Admin"} 👋
           </h2>
-          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-            {currentTime}
-          </p>
+          <p className="text-sm text-gray-500">{currentTime}</p>
         </div>
       </div>
 
-      {/* Right Section */}
-      <div className="flex items-center gap-2 sm:gap-3">
-        <button
-          disabled
-          onClick={() => setDarkMode(!darkMode)}
-          className="p-1.5 sm:p-2 cursor-not-allowed rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600 transition"
-          aria-label="Toggle theme"
-        >
-          {darkMode ? (
-            <Sun className="w-4 h-4 sm:w-5 sm:h-5" />
-          ) : (
-            <Moon className="w-4 h-4 sm:w-5 sm:h-5" />
-          )}
-        </button>
-
-        <button
-          onClick={logout}
-          className="flex items-center justify-center p-1.5 sm:p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
-          aria-label="Logout"
-        >
-          <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
-        </button>
-      </div>
+      {/* Right side */}
+      <button
+        onClick={logout}
+        className="flex items-center justify-center p-2 
+        bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+      >
+        <LogOut className="w-5 h-5" />
+      </button>
     </header>
   );
 };

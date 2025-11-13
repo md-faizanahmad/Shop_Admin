@@ -1,106 +1,87 @@
-// import { useState } from "react";
-// import axios from "axios";
-// import { useAuth } from "@/hooks/useAuth";
+// src/pages/Profile.tsx
+import { useEffect, useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-// const Profile = () => {
-//   const { admin, token, updateAdmin } = useAuth();
+export default function Profile() {
+  const { admin } = useAuth();
+  const API_URL = import.meta.env.VITE_API_URL ?? "";
+  const [name, setName] = useState<string>(admin?.name ?? "");
+  const [email] = useState<string>(admin?.email ?? "");
+  const [password, setPassword] = useState<string>("");
+  const [saving, setSaving] = useState<boolean>(false);
 
-//   const [formData, setFormData] = useState({
-//     name: admin?.name || "",
-//     username: admin?.username || "",
-//     email: admin?.email || "",
-//     password: "",
-//   });
-//   const [message, setMessage] = useState("");
+  useEffect(() => {
+    if (admin) setName(admin.name);
+  }, [admin]);
 
-//   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     setFormData({ ...formData, [e.target.name]: e.target.value });
-//   };
+  async function handleSave() {
+    setSaving(true);
+    try {
+      const body: { name: string; password?: string } = { name };
+      if (password.trim()) body.password = password.trim();
 
-//   const handleUpdate = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     try {
-//       const res = await axios.put(
-//         "http://localhost:3000/api/admin/profile",
-//         formData,
-//         { headers: { Authorization: `Bearer ${token}` } }
-//       );
-//       setMessage(res.data.message || "Profile updated successfully");
-//       updateAdmin({
-//         ...admin,
-//         name: formData.name,
-//         username: formData.username,
-//         email: formData.email,
-//       });
-//     } catch (err) {
-//       if (axios.isAxiosError(err))
-//         setMessage(err.response?.data?.message || "Update failed");
-//       else setMessage("Something went wrong");
-//     }
-//   };
+      await axios.put(`${API_URL}/mystoreapi/admin/update`, body, {
+        withCredentials: true,
+      });
+      toast.success("Profile updated");
+      setPassword("");
+    } catch (err) {
+      if (axios.isAxiosError(err))
+        toast.error(err.response?.data?.message ?? "Update failed");
+      else toast.error("Update failed");
+    } finally {
+      setSaving(false);
+    }
+  }
 
-//   return (
-//     <div className="flex h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-//       <div className="flex flex-col flex-1">
-//         <main className="p-6">
-//           <h1 className="text-2xl font-bold mb-4">Edit Profile</h1>
+  return (
+    <div className="max-w-2xl mx-auto p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow">
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
+          Admin Profile
+        </h2>
 
-//           <form
-//             onSubmit={handleUpdate}
-//             className="bg-white dark:bg-gray-800 p-6 rounded shadow-md max-w-md space-y-4"
-//           >
-//             <input
-//               type="text"
-//               name="name"
-//               placeholder="Name"
-//               className="border p-2 w-full dark:bg-gray-700"
-//               value={formData.name}
-//               onChange={handleChange}
-//               required
-//             />
-//             <input
-//               type="text"
-//               name="username"
-//               placeholder="Username"
-//               className="border p-2 w-full dark:bg-gray-700"
-//               value={formData.username}
-//               onChange={handleChange}
-//               required
-//             />
-//             <input
-//               type="email"
-//               name="email"
-//               placeholder="Email"
-//               className="border p-2 w-full dark:bg-gray-700"
-//               value={formData.email}
-//               onChange={handleChange}
-//               required
-//             />
-//             <input
-//               type="password"
-//               name="password"
-//               placeholder="New Password (optional)"
-//               className="border p-2 w-full dark:bg-gray-700"
-//               value={formData.password}
-//               onChange={handleChange}
-//             />
-//             <button
-//               type="submit"
-//               className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-//             >
-//               Update Profile
-//             </button>
+        <label className="block text-sm text-gray-600 dark:text-gray-300">
+          Name
+        </label>
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full mt-2 p-2 border rounded bg-gray-50 dark:bg-gray-700 dark:border-gray-600"
+        />
 
-//             {message && (
-//               <p className="text-center text-sm mt-2 text-green-500">
-//                 {message}
-//               </p>
-//             )}
-//           </form>
-//         </main>
-//       </div>
-//     </div>
-//   );
-// };
+        <label className="block text-sm text-gray-600 dark:text-gray-300 mt-4">
+          Email
+        </label>
+        <input
+          value={email}
+          disabled
+          className="w-full mt-2 p-2 border rounded bg-gray-100 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
+        />
 
-// export default Profile;
+        <label className="block text-sm text-gray-600 dark:text-gray-300 mt-4">
+          New Password
+        </label>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Leave empty to keep current password"
+          className="w-full mt-2 p-2 border rounded bg-gray-50 dark:bg-gray-700 dark:border-gray-600"
+        />
+
+        <div className="mt-6 flex justify-end gap-3">
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-60"
+          >
+            {saving ? "Saving..." : "Save Changes"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

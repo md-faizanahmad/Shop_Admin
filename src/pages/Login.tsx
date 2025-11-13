@@ -2,66 +2,81 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
-import axios from "axios";
+import { AxiosError } from "axios";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError("");
+    setLoading(true);
 
     try {
-      // Server sets HttpOnly cookie; response also returns admin payload for UI.
       const { data } = await api.post("/mystoreapi/admin/login", {
         email,
         password,
       });
-      // Expect: { success: true, admin: { id, name, email } }
-      login(data?.admin ?? null);
+
+      login(data.admin ?? null);
+      toast.success("Login successful!");
       navigate("/dashboard");
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.message || "Invalid credentials");
-      } else {
-        setError("Something went wrong");
-      }
+      const error = err as AxiosError<{ message?: string }>;
+
+      const message =
+        error.response?.data?.message ??
+        "Unable to log in right now. Please try again.";
+
+      toast.error(message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex h-screen justify-center items-center bg-gray-100">
+    <div className="flex h-screen justify-center items-center bg-gray-100 dark:bg-gray-900">
       <form
         onSubmit={handleLogin}
-        className="bg-white p-6 rounded shadow-md w-80"
+        className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md w-80"
       >
-        <h2 className="text-xl font-semibold mb-4">Admin Login</h2>
+        <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+          Admin Login
+        </h2>
+
         <input
           type="email"
           placeholder="Email"
-          className="border p-2 mb-3 w-full"
+          className="border p-2 mb-3 w-full rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
+
         <input
           type="password"
           placeholder="Password"
-          className="border p-2 mb-3 w-full"
+          className="border p-2 mb-3 w-full rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
+
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+          disabled={loading}
+          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition disabled:opacity-60 flex justify-center"
         >
-          Login
+          {loading ? (
+            <div className="border-2 border-white border-t-transparent rounded-full w-5 h-5 animate-spin"></div>
+          ) : (
+            "Login"
+          )}
         </button>
       </form>
     </div>

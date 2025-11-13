@@ -2,6 +2,7 @@ import { useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { Outlet } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -20,6 +21,7 @@ const DashboardLayout = () => {
         <main className="p-4 overflow-auto">
           <Outlet />
         </main>
+        <ToastContainer position="top-right" />
       </div>
     </div>
   );
