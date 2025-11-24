@@ -18,7 +18,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const { data } = await api.post("/mystoreapi/admin/login", {
+      const { data } = await api.post("/api/admin/login", {
         email,
         password,
       });

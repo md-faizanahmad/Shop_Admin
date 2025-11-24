@@ -1,24 +1,51 @@
+// // models/User.js
+// import mongoose from "mongoose";
+
+// const userSchema = new mongoose.Schema(
+//   {
+//     name: { type: String, required: true },
+//     email: { type: String, unique: true, required: true },
+//     password: { type: String },
+//     phone: { type: String },
+//     googleId: { type: String },
+//   },
+//   { timestamps: true }
+// );
+
+// export default mongoose.model("User", userSchema);
+///////////////new for wishlist-
+// models/User.js
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema(
   {
-    name: String,
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    role: { type: String, default: "user" },
+    name: { type: String, required: true },
+    email: { type: String, unique: true, required: true },
+    password: { type: String },
+    phone: { type: String },
+    googleId: { type: String },
+    addresses: [
+      {
+        fullName: String,
+        phone: String,
+        street: String,
+        city: String,
+        state: String,
+        pincode: String,
+        landmark: String,
+        isDefault: { type: Boolean, default: false },
+      },
+    ],
+
+    cart: [
+      {
+        product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+        qty: { type: Number, default: 1 },
+      },
+    ],
+    wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
   },
   { timestamps: true }
 );
-
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
-});
-
-userSchema.methods.comparePassword = function (password) {
-  return bcrypt.compare(password, this.password);
-};
 
 export default mongoose.model("User", userSchema);

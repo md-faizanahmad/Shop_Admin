@@ -6,6 +6,11 @@ import {
   Brain,
   User,
   X,
+  Sparkles,
+  Users,
+  Package,
+  ChartSpline,
+  BarChart3,
   ShoppingBag,
 } from "lucide-react";
 
@@ -14,62 +19,100 @@ interface SidebarProps {
   onClose: () => void;
 }
 
-const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
+export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const location = useLocation();
-
-  const links = [
+  const navItems = [
     { name: "Dashboard", icon: Home, path: "/dashboard" },
+    { name: "Analytics", icon: BarChart3, path: "/dashboard" },
+    { name: "Orders List", icon: ShoppingBag, path: "/dashboard/orders" },
+
     {
-      name: "Manage Category",
+      name: "Customers Analytics",
+      icon: ChartSpline,
+      path: "/dashboard/customersAnalytics",
+    },
+
+    {
+      name: "All Customers ",
+      icon: Users,
+      path: "/dashboard/customers",
+    },
+    // Products Section
+    { name: "Products List", icon: Package, path: "/dashboard/products" },
+    {
+      name: "Add Products",
+      icon: PackagePlus,
+      path: "/dashboard/products/add",
+    },
+    {
+      name: "Categories",
       icon: FolderPlus,
       path: "/dashboard/manage-category",
     },
-    { name: "Add Product", icon: PackagePlus, path: "/dashboard/products/add" },
-    { name: "Product List", icon: User, path: "/dashboard/products" },
-    { name: "Orders", icon: ShoppingBag, path: "/dashboard/orders" },
+
+    // AI Tools (Your USP)
+    {
+      name: "AI Description",
+      icon: Sparkles,
+      path: "/dashboard/ai-tools/description",
+    },
     { name: "AI Tools", icon: Brain, path: "/dashboard/ai-tools" },
+
+    // Account
     { name: "Profile", icon: User, path: "/dashboard/profile" },
   ];
 
   return (
     <>
-      {/* Mobile Overlay */}
+      {/* Overlay */}
       <div
-        className={`fixed inset-0 bg-black/40 backdrop-blur-md z-40 transition-opacity md:hidden 
+        className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300
         ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}
         onClick={onClose}
       />
 
+      {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-screen w-64 bg-white shadow-xl
-        z-50 transform transition-transform duration-300 ease-out
+        className={`fixed top-0 left-0 max-h-screen w-64 bg-gray-200 shadow-xl z-50
+        transform transition-all duration-300
         ${isOpen ? "translate-x-0" : "-translate-x-full"}
-        md:static md:translate-x-0 md:shadow-none`}
+        md:static md:translate-x-0`}
       >
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
-          <h1 className="text-lg font-bold text-gray-800">Admin Panel</h1>
-          <button onClick={onClose} className="md:hidden text-gray-700">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b">
+          <h1 className="text-lg font-bold">
+            <Link to="/dashboard" className="text-gray-700">
+              Admin Panel
+            </Link>
+          </h1>
+          <button onClick={onClose} className="md:hidden">
             <X className="w-6 h-6" />
           </button>
         </div>
 
+        {/* Nav */}
         <nav className="flex flex-col p-3 space-y-2">
-          {links.map(({ name, icon: Icon, path }) => {
+          {navItems.map(({ name, icon: Icon, path }) => {
             const active = location.pathname === path;
+
             return (
               <Link
                 key={name}
                 to={path}
                 onClick={onClose}
                 className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium
-                  transition-all duration-200
+                  transition-all duration-200 group
                   ${
                     active
-                      ? "bg-blue-500 text-white shadow"
-                      : "text-gray-800 hover:bg-gray-100"
-                  }`}
+                      ? "bg-sky-800 text-white shadow-md"
+                      : "text-red-700 hover:bg-black"
+                  }
+                `}
               >
-                <Icon className="w-5 h-5" />
+                <Icon
+                  className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110
+                    ${active ? "text-white" : "text-gray-600"}`}
+                />
                 {name}
               </Link>
             );
@@ -78,6 +121,4 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
       </aside>
     </>
   );
-};
-
-export default Sidebar;
+}

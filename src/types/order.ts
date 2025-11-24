@@ -1,17 +1,80 @@
-// types/order.ts (create this file and import where needed)
-export type OrderItem = {
-  productId: string; // store the product id
-  productName?: string; // optional denormalized name (if you store it)
-  quantity: number;
-  price: number; // price at order time
-};
+// export interface ProductInOrder {
+//   _id: string;
+//   name: string;
+//   imageUrl: string;
+// }
 
-export type Order = {
+// export interface OrderItem {
+//   product: ProductInOrder;
+//   qty: number;
+//   price: number;
+// }
+
+// export interface PaymentInfo {
+//   orderId: string;
+//   paymentId: string;
+// }
+
+// export type OrderStatus =
+//   | "placed"
+//   | "processing"
+//   | "shipping"
+//   | "delivered"
+//   | "cancelled";
+
+// export interface Order {
+//   _id: string;
+//   user: string; // userId
+//   userName: string; // populated for admin UI
+//   userEmail?: string; // optional
+//   items: OrderItem[];
+//   totalAmount: number;
+//   status: OrderStatus;
+//   paymentStatus: "Paid" | "Unpaid";
+//   paymentInfo: PaymentInfo;
+//   createdAt: string;
+//   updatedAt: string;
+// }
+// src/types/order.ts
+
+export interface ProductInOrder {
   _id: string;
-  customerName: string;
-  customerEmail: string;
+  name: string;
+  imageUrl: string;
+}
+
+export interface OrderItem {
+  product: ProductInOrder;
+  qty: number;
+  price: number;
+}
+
+export interface PaymentInfo {
+  orderId: string;
+  paymentId: string;
+}
+
+export type OrderStatus =
+  | "placed"
+  | "processing"
+  | "shipping"
+  | "delivered"
+  | "cancelled";
+
+export interface Order {
+  _id: string;
+  user: string;
+  userName: string;
+  userEmail?: string;
+
   items: OrderItem[];
   totalAmount: number;
-  status: "pending" | "shipping" | "delivered" | "cancelled";
-  createdAt: string; // ISO date string
-};
+
+  status: OrderStatus;
+  paymentStatus: "Paid" | "Unpaid";
+
+  paymentInfo: PaymentInfo;
+
+  createdAt: string;
+  updatedAt: string;
+}

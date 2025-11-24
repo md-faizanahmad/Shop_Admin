@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const MyStoreApi = axios.create({
-  baseURL: import.meta.env.VITE_API_URL + "/mystoreapi",
+  baseURL: import.meta.env.VITE_API_URL + "/api",
   withCredentials: true, // important for cookies
 });
 

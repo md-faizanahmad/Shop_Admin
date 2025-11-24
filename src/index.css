@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "react-toastify/dist/ReactToastify.css";
 
 /* Base Font */
 :root {
@@ -13,13 +14,6 @@ body {
 }
 
 /* Links */
-a {
-  font-weight: 500;
-  color: #3b82f6;
-}
-a:hover {
-  color: #1e40af;
-}
 
 /* Buttons */
 button {
@@ -28,4 +22,15 @@ button {
 }
 button:active {
   transform: scale(0.97);
+}
+/* Hide scrollbar but allow scrolling */
+nav::-webkit-scrollbar {
+  width: 4px;
+}
+nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+nav::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
 }

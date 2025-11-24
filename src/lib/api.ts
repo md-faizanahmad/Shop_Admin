@@ -1,11 +1,10 @@
 import axios from "axios";
 
-const baseURL =
-  import.meta.env.VITE_API_URL ?? "https://mystore-admin-xi.vercel.app/";
+const baseURL = import.meta.env.VITE_API_URL ?? "https://admin.myazstore.shop";
 
 // One client for the whole app; cookies ON for HttpOnly auth
 export const api = axios.create({
-  baseURL, // e.g. https://my-store-backend-gamma.vercel.app
+  baseURL,
   withCredentials: true,
 });
 
@@ -21,10 +20,10 @@ export const api = axios.create({
 // };
 export const endpoints = {
   admin: {
-    login: "/mystoreapi/admin/login",
-    logout: "/mystoreapi/admin/logout",
-    me: "/mystoreapi/admin/me",
+    login: "/api/admin/login",
+    logout: "/api/admin/logout",
+    me: "/api/admin/me",
   },
-  categories: "/mystoreapi/categories",
-  products: "/mystoreapi/products",
+  categories: "/api/categories",
+  products: "/api/products",
 };

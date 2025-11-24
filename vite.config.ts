@@ -11,6 +11,7 @@ export default defineConfig({
   //     "/api": "https://my-store-backend-gamma.vercel.app/",
   //   },
   // },
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),

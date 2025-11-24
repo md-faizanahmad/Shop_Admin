@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await api.get("/mystoreapi/admin/me");
+        const { data } = await api.get("/api/admin/me");
         // Expect: { success: true, admin: { id, name, email } }
         setAdmin(data?.admin ?? null);
       } catch {
@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = async () => {
     try {
-      await api.post("/mystoreapi/admin/logout");
+      await api.post("/api/admin/logout");
     } catch (err) {
       // Best effort; ignore network errors
       if (axios.isAxiosError(err)) {

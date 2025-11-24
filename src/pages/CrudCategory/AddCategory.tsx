@@ -20,7 +20,7 @@ export default function AddCategory() {
   } | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  const API_BASE = `${import.meta.env.VITE_API_URL}/mystoreapi/categories`;
+  const API_BASE = `${import.meta.env.VITE_API_URL}/api/categories`;
 
   function showToast(type: "ok" | "err", msg: string) {
     setToast({ type, msg });
