@@ -25,10 +25,12 @@ interface CustomerStats {
 export default function CustomersDashboard() {
   const [stats, setStats] = useState<CustomerStats | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const API_BASE = `${import.meta.env.VITE_API_URL}`;
   useEffect(() => {
     axios
-      .get("/api/admin/customers/analytics")
+      .get(`${API_BASE}/api/admin/customers/analytics`, {
+        withCredentials: true,
+      })
       .then((res) => setStats(res.data.data))
       .finally(() => setLoading(false));
     console.log(stats?.cityData);

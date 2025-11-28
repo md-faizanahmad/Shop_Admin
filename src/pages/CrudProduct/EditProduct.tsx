@@ -111,6 +111,129 @@
 // }
 //////////////////////////////////////////////////////////
 // src/pages/CrudProduct/EditProduct.tsx
+// import { useEffect, useState } from "react";
+// import { useParams, useNavigate } from "react-router-dom";
+// import { toast } from "react-toastify";
+// import axios, { AxiosError } from "axios";
+// import ProductForm, { type ProductFormData } from "./ProductForm";
+
+// interface ProductResponse {
+//   _id: string;
+//   name: string;
+//   description: string;
+//   price: number;
+//   stock: number;
+//   category: { _id: string; name: string } | string;
+//   highlights: string[];
+//   specifications: Record<string, string>;
+//   images: string[];
+//   imageUrl?: string;
+// }
+
+// export default function EditProduct() {
+//   const { id } = useParams<{ id: string }>();
+//   const navigate = useNavigate();
+//   const [product, setProduct] = useState<ProductResponse | null>(null);
+//   const [loading, setLoading] = useState(false);
+//   const [fetching, setFetching] = useState(true);
+//   const API_URL = import.meta.env.VITE_API_URL as string;
+
+//   useEffect(() => {
+//     if (!id) {
+//       navigate("/dashboard/products");
+//       return;
+//     }
+
+//     let isMounted = true;
+
+//     axios
+//       .get<{ success: boolean; product: ProductResponse }>(
+//         `${API_URL}/api/products/${id}`,
+//         {
+//           withCredentials: true,
+//         }
+//       )
+//       .then((res) => {
+//         if (isMounted) setProduct(res.data.product);
+//       })
+//       .catch(() => {
+//         toast.error("Failed to load product");
+//         if (isMounted) navigate("/dashboard/products");
+//       })
+//       .finally(() => {
+//         if (isMounted) setFetching(false);
+//       });
+
+//     return () => {
+//       isMounted = false;
+//     };
+//   }, [id, API_URL, navigate]);
+
+//   const handleSubmit = async (formData: FormData) => {
+//     if (!id) return;
+//     setLoading(true);
+//     try {
+//       await axios.put(`${API_URL}/api/products/${id}`, formData, {
+//         withCredentials: true,
+//         headers: { "Content-Type": "multipart/form-data" },
+//       });
+//       toast.success("Product updated!");
+//       navigate("/dashboard/products");
+//     } catch (error) {
+//       let message = "Failed to update product";
+//       if (axios.isAxiosError(error)) {
+//         const err = error as AxiosError<{ message?: string }>;
+//         message = err.response?.data?.message ?? message;
+//       }
+//       toast.error(message);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   if (fetching) return <div className="p-10 text-center">Loading...</div>;
+//   if (!product)
+//     return (
+//       <div className="p-10 text-center text-red-600">Product not found</div>
+//     );
+
+//   const initialData: Partial<ProductFormData> = {
+//     name: product.name,
+//     description: product.description,
+//     price: product.price,
+//     stock: product.stock,
+//     category:
+//       typeof product.category === "object"
+//         ? product.category._id
+//         : product.category,
+//     highlights: product.highlights,
+//     specifications: product.specifications,
+//     images: product.images.length
+//       ? product.images
+//       : product.imageUrl
+//       ? [product.imageUrl]
+//       : [],
+//   };
+
+//   return (
+//     <div className="p-6 max-w-7xl mx-auto">
+//       <button
+//         onClick={() => navigate(-1)}
+//         className="mb-6 text-gray-600 hover:text-black"
+//       >
+//         ← Back
+//       </button>
+//       <h1 className="text-3xl font-bold mb-8">Edit Product</h1>
+//       <ProductForm
+//         initial={initialData}
+//         onSubmit={handleSubmit}
+//         submitLabel="Update Product"
+//         loading={loading}
+//       />
+//     </div>
+//   );
+// }
+//////////////////////////// update with costprice
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -122,6 +245,8 @@ interface ProductResponse {
   name: string;
   description: string;
   price: number;
+  costPrice?: number; // NEW FIELD
+  discountPrice?: number;
   stock: number;
   category: { _id: string; name: string } | string;
   highlights: string[];
@@ -138,6 +263,7 @@ export default function EditProduct() {
   const [fetching, setFetching] = useState(true);
   const API_URL = import.meta.env.VITE_API_URL as string;
 
+  /* ---------------- FETCH PRODUCT ---------------- */
   useEffect(() => {
     if (!id) {
       navigate("/dashboard/products");
@@ -149,9 +275,7 @@ export default function EditProduct() {
     axios
       .get<{ success: boolean; product: ProductResponse }>(
         `${API_URL}/api/products/${id}`,
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       )
       .then((res) => {
         if (isMounted) setProduct(res.data.product);
@@ -169,38 +293,48 @@ export default function EditProduct() {
     };
   }, [id, API_URL, navigate]);
 
+  /* ---------------- SUBMIT ---------------- */
   const handleSubmit = async (formData: FormData) => {
     if (!id) return;
     setLoading(true);
+
     try {
       await axios.put(`${API_URL}/api/products/${id}`, formData, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });
+
       toast.success("Product updated!");
       navigate("/dashboard/products");
     } catch (error) {
       let message = "Failed to update product";
+
       if (axios.isAxiosError(error)) {
         const err = error as AxiosError<{ message?: string }>;
         message = err.response?.data?.message ?? message;
       }
+
       toast.error(message);
     } finally {
       setLoading(false);
     }
   };
 
+  /* ---------------- STATES ---------------- */
   if (fetching) return <div className="p-10 text-center">Loading...</div>;
+
   if (!product)
     return (
       <div className="p-10 text-center text-red-600">Product not found</div>
     );
 
+  /* ---------------- INITIAL FORM DATA ---------------- */
   const initialData: Partial<ProductFormData> = {
     name: product.name,
     description: product.description,
     price: product.price,
+    costPrice: product.costPrice ?? product.price, // fallback
+    discountPrice: product.discountPrice ?? 0,
     stock: product.stock,
     category:
       typeof product.category === "object"
@@ -208,11 +342,12 @@ export default function EditProduct() {
         : product.category,
     highlights: product.highlights,
     specifications: product.specifications,
-    images: product.images.length
-      ? product.images
-      : product.imageUrl
-      ? [product.imageUrl]
-      : [],
+    images:
+      product.images.length > 0
+        ? product.images
+        : product.imageUrl
+        ? [product.imageUrl]
+        : [],
   };
 
   return (
@@ -223,7 +358,9 @@ export default function EditProduct() {
       >
         ← Back
       </button>
+
       <h1 className="text-3xl font-bold mb-8">Edit Product</h1>
+
       <ProductForm
         initial={initialData}
         onSubmit={handleSubmit}

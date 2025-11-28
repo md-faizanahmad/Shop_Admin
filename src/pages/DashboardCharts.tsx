@@ -37,11 +37,13 @@ interface ChartData {
 export default function DashboardCharts() {
   const [data, setData] = useState<ChartData | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const API_BASE = `${import.meta.env.VITE_API_URL}`;
   useEffect(() => {
     const fetchChartData = async () => {
       try {
-        const res = await axios.get("/api/admin/dashboard/charts");
+        const res = await axios.get(`${API_BASE}/api/admin/dashboard/charts`, {
+          withCredentials: true,
+        });
         setData(res.data.data);
       } catch (err) {
         console.error(err);

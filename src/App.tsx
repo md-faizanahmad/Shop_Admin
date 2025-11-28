@@ -16,43 +16,59 @@ import OrderManage from "./pages/Orders/OrderManager";
 import CustomersDashboard from "./pages/CustomersAnalytics";
 import CustomersPage from "./pages/CustomersPage";
 import CustomerDetailsPage from "./pages/CustomerDetailsPage";
+import { ToastContainer } from "react-toastify";
+import SetupHeroPage from "./pages/hero/SetupHeroPage";
+import AdminProductDetails from "./pages/AdminProductDetails";
+import InventoryPage from "./pages/Inventory/InventoryPage";
+// import ProfitDashboard from "./pages/Inventory/ProfitDashboard";
+import ProductStatsPage from "./pages/Inventory/ProductStatsPage";
+import InventoryAnalyticsPro from "./pages/Inventory/InventoryAnalyticsPro";
 
 export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
+    <>
+      <ToastContainer position="top-center" />
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login />} />
 
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<Dashboard />} />
-          <Route path="manage-category" element={<AddCategory />} />
-          <Route path="products" element={<ProductList />} />
-          <Route path="products/add" element={<AddProduct />} />
-          <Route path="products/edit/:id" element={<EditProduct />} />
-          <Route path="orders" element={<OrdersPage />} />
-          <Route path="orders/manage/:orderId" element={<OrderManage />} />
-          {/* <Route path="/dashboard/orders/manage/:orderId" element={<OrderManage />} /> */}
-
-          <Route path="profile" element={<Profile />} />
-          <Route path="customersAnalytics" element={<CustomersDashboard />} />
-          <Route path="customers" element={<CustomersPage />} />
-          <Route path="customers/:id" element={<CustomerDetailsPage />} />
-
-          <Route path="ai-tools" element={<AITools />} />
           <Route
-            path="ai-tools/description"
-            element={<ProductDescriptionAI />}
-          />
-          <Route path="ai-tools/remove-bg" element={<RemoveBgAIPage />} />
-        </Route>
-      </Routes>
-    </Router>
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Dashboard />} />
+            <Route path="manage-category" element={<AddCategory />} />
+            <Route path="products" element={<ProductList />} />
+            <Route path="products/view/:id" element={<AdminProductDetails />} />
+            <Route path="products/add" element={<AddProduct />} />
+            <Route path="products/edit/:id" element={<EditProduct />} />
+            <Route path="orders" element={<OrdersPage />} />
+            <Route path="orders/manage/:orderId" element={<OrderManage />} />
+            {/* <Route path="/dashboard/orders/manage/:orderId" element={<OrderManage />} /> */}
+
+            <Route path="setupHero" element={<SetupHeroPage />} />
+            <Route path="inventory" element={<InventoryPage />} />
+            <Route path="shop-analytics" element={<InventoryAnalyticsPro />} />
+            <Route path="products/details/:id" element={<ProductStatsPage />} />
+            {/* <Route path="profit" element={<ProfitDashboard />} /> */}
+            <Route path="profile" element={<Profile />} />
+            <Route path="customersAnalytics" element={<CustomersDashboard />} />
+            <Route path="customers" element={<CustomersPage />} />
+            <Route path="customers/:id" element={<CustomerDetailsPage />} />
+
+            <Route path="ai-tools" element={<AITools />} />
+            <Route
+              path="ai-tools/description"
+              element={<ProductDescriptionAI />}
+            />
+            <Route path="ai-tools/remove-bg" element={<RemoveBgAIPage />} />
+          </Route>
+        </Routes>
+      </Router>
+    </>
   );
 }

@@ -217,7 +217,7 @@
 // src/pages/CrudProduct/ProductList.tsx
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import ProductTable, { type ProductBrief } from "./ProductTable";
+import ProductTable, { type ProductBrief } from "../ProductTable";
 import { Plus, Search, Filter, X, Package } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -285,19 +285,6 @@ export default function ProductListPage() {
     return filtered.slice(start, start + PAGE_SIZE);
   }, [filtered, page]);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this product permanently?")) return;
-    try {
-      await axios.delete(`${API_URL}/api/products/${id}`, {
-        withCredentials: true,
-      });
-      setProducts((p) => p.filter((x) => x._id !== id));
-      toast.success("Product deleted");
-    } catch {
-      toast.error("Delete failed");
-    }
-  };
-
   const handleToggleStock = async (p: ProductBrief) => {
     try {
       const newStock = p.stock > 0 ? 0 : 10;
@@ -312,6 +299,51 @@ export default function ProductListPage() {
       toast.success(newStock === 0 ? "Marked out of stock" : "Back in stock");
     } catch {
       toast.error("Update failed");
+    }
+  };
+
+  // Soft Delete
+  // 🟦 SOFT DELETE
+  const handleSoftDelete = async (id: string) => {
+    try {
+      await axios.delete(`${API_URL}/api/products/${id}`, {
+        withCredentials: true,
+      });
+
+      setProducts((prev) =>
+        prev.map((p) =>
+          p._id === id
+            ? { ...p, isDeleted: true, deletedAt: new Date().toISOString() }
+            : p
+        )
+      );
+
+      toast.success("Product soft-deleted");
+    } catch {
+      toast.error("Delete failed");
+    }
+  };
+
+  // 🟩 RESTORE PRODUCT
+  const handleRestore = async (id: string) => {
+    try {
+      await axios.patch(
+        `${API_URL}/api/products/${id}/restore`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+
+      setProducts((prev) =>
+        prev.map((p) =>
+          p._id === id ? { ...p, isDeleted: false, deletedAt: null } : p
+        )
+      );
+
+      toast.success("Product restored");
+    } catch {
+      toast.error("Restore failed");
     }
   };
 
@@ -417,7 +449,9 @@ export default function ProductListPage() {
 
             <select
               value={stockFilter}
-              onChange={(e) => setStockFilter(e.target.value as any)}
+              onChange={(e) =>
+                setStockFilter(e.target.value as "all" | "in" | "out")
+              }
               className="px-5 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 outline-none transition"
             >
               <option value="all">All Stock</option>
@@ -454,8 +488,9 @@ export default function ProductListPage() {
           <ProductTable
             products={pageItems}
             onEdit={handleEdit}
-            onDelete={handleDelete}
             onToggleStock={handleToggleStock}
+            onSoftDelete={handleSoftDelete} // 🟦 add
+            onRestore={handleRestore}
           />
         )}
       </div>
