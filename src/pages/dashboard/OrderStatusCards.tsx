@@ -53,7 +53,7 @@ export default function OrderStatusCards() {
         />
       </div>
 
-      <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-10 text-white shadow-2xl flex flex-col justify-center">
+      <div className="bg-linear-to-br from-emerald-500 to-teal-600 rounded-2xl p-10 text-white shadow-2xl flex flex-col justify-center">
         <p className="text-emerald-100 text-lg">This Month Revenue</p>
         <p className="text-6xl font-bold mt-4">
           ₹{data.monthlyRevenue?.toLocaleString() || 0}
