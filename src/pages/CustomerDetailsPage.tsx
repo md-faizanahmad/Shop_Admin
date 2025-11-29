@@ -224,7 +224,7 @@ export default function CustomerDetailsPage() {
           <User className="w-16 h-16 mx-auto text-gray-400 mb-4" />
           <p className="text-xl text-gray-600">Customer not found</p>
           <Link
-            to="/dashboard/customers"
+            to="/dashboard/customers-insight"
             className="mt-4 inline-flex items-center gap-2 text-sky-600 hover:underline"
           >
             <ArrowLeft className="w-5 h-5" /> Back to Customers

@@ -175,7 +175,6 @@ export default function DashboardCharts() {
         <p className="text-4xl font-bold">
           ₹{data.monthlyRevenue.toLocaleString()}
         </p>
-        {/* <p className="text-emerald-100 text-sm mt-3">+18% from last month</p> */}
       </div>
     </div>
   );

@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "@/pages/Login";
-import Dashboard from "@/pages/Dashboard";
 import ProtectedRoute from "./routes/ProtectedRoutes";
 import DashboardLayout from "./layout/DashboardLayout";
 import AddProduct from "./pages/CrudProduct/AddProduct";
@@ -13,16 +12,16 @@ import ProductDescriptionAI from "./pages/AI/ProductDescriptionAI";
 import RemoveBgAIPage from "./pages/AI/RemoveBgAI";
 import EditProduct from "./pages/CrudProduct/EditProduct";
 import OrderManage from "./pages/Orders/OrderManager";
-import CustomersDashboard from "./pages/CustomersAnalytics";
-import CustomersPage from "./pages/CustomersPage";
+
 import CustomerDetailsPage from "./pages/CustomerDetailsPage";
 import { ToastContainer } from "react-toastify";
 import SetupHeroPage from "./pages/hero/SetupHeroPage";
 import AdminProductDetails from "./pages/AdminProductDetails";
-import InventoryPage from "./pages/Inventory/InventoryPage";
 // import ProfitDashboard from "./pages/Inventory/ProfitDashboard";
 import ProductStatsPage from "./pages/Inventory/ProductStatsPage";
 import InventoryAnalyticsPro from "./pages/Inventory/InventoryAnalyticsPro";
+import CustomerInsight from "./pages/CustomerInsight";
+import AdminDashboard from "@/pages/AdminDashboard";
 
 export default function App() {
   return (
@@ -40,7 +39,7 @@ export default function App() {
               </ProtectedRoute>
             }
           >
-            <Route index element={<Dashboard />} />
+            <Route index element={<AdminDashboard />} />
             <Route path="manage-category" element={<AddCategory />} />
             <Route path="products" element={<ProductList />} />
             <Route path="products/view/:id" element={<AdminProductDetails />} />
@@ -51,13 +50,12 @@ export default function App() {
             {/* <Route path="/dashboard/orders/manage/:orderId" element={<OrderManage />} /> */}
 
             <Route path="setupHero" element={<SetupHeroPage />} />
-            <Route path="inventory" element={<InventoryPage />} />
             <Route path="shop-analytics" element={<InventoryAnalyticsPro />} />
             <Route path="products/details/:id" element={<ProductStatsPage />} />
             {/* <Route path="profit" element={<ProfitDashboard />} /> */}
             <Route path="profile" element={<Profile />} />
-            <Route path="customersAnalytics" element={<CustomersDashboard />} />
-            <Route path="customers" element={<CustomersPage />} />
+
+            <Route path="customers-insight" element={<CustomerInsight />} />
             <Route path="customers/:id" element={<CustomerDetailsPage />} />
 
             <Route path="ai-tools" element={<AITools />} />

@@ -228,9 +228,7 @@ import {
   CheckCircle,
   FolderOpen,
   Users,
-  Brain,
   RefreshCw,
-  IndianRupee,
 } from "lucide-react";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -238,7 +236,7 @@ import { Link } from "react-router-dom";
 interface Stats {
   totalOrders: number;
   todayOrders: number;
-  totalRevenue: number;
+
   pending: number;
   processing: number;
   shipped: number;
@@ -317,15 +315,7 @@ export default function AdminStatsCards() {
       date: today,
       link: "/dashboard/orders",
     },
-    {
-      title: "Revenue",
-      value: stats?.totalRevenue || 0,
-      icon: IndianRupee,
-      bg: "bg-green-100",
-      iconColor: "text-green-600",
-      prefix: "₹",
-      link: "/dashboard/orders",
-    },
+
     {
       title: "Products",
       value: stats?.totalProducts || 0,
@@ -421,11 +411,6 @@ export default function AdminStatsCards() {
                 <p className="text-xs text-gray-600">{card.title}</p>
 
                 <div className="flex items-center gap-1">
-                  {card.prefix && (
-                    <span className="font-bold text-green-700 text-lg">
-                      {card.prefix}
-                    </span>
-                  )}
                   <CountUp value={card.value} />
                 </div>
               </div>
@@ -433,21 +418,6 @@ export default function AdminStatsCards() {
           </motion.div>
         );
       })}
-
-      {/* AI Insights */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="col-span-3 sm:col-span-4 lg:col-span-3 bg-sky-600 text-white rounded-xl p-5 shadow flex flex-col justify-between"
-      >
-        <div className="flex items-center gap-3">
-          <Brain className="w-8 h-8" />
-          <h3 className="text-lg font-bold">AI Insights</h3>
-        </div>
-        <p className="text-sm opacity-90 mt-2">Revenue up 42% this week</p>
-        <p className="text-xs opacity-80">Top product: Samsung Audio</p>
-        <p className="text-xs opacity-80">Peak hour: 8–10 PM</p>
-      </motion.div>
     </div>
   );
 }
