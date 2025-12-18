@@ -102,7 +102,7 @@ export default function RemoveBgAI() {
 
       const base64 = await toBase64(imageFile);
 
-      const res = await axios.post(`${API_URL}/api/ai/remove-bg`, {
+      const res = await axios.post(`${API_URL}/v1/ai/remove-bg`, {
         imageBase64: base64,
       });
 

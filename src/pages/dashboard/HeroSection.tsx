@@ -18,7 +18,7 @@ export default function HeroSection() {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/api/admin/dashboard/today`, {
+      .get(`${import.meta.env.VITE_API_URL}/v1/admin/dashboard/today`, {
         withCredentials: true,
       })
       .then((res: { data: TodayData }) => setToday(res.data))

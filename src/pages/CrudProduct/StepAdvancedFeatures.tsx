@@ -40,7 +40,7 @@ export default function StepAdvancedFeatures({
 
       <div className="flex gap-4 mt-10">
         <BackButton onClick={onBack} />
-        <NextButton onClick={onNext} label="Review & Publish" />
+        <NextButton onClick={onNext} label="Images" />
       </div>
     </StepWrapper>
   );

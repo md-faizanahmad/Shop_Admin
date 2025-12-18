@@ -18,7 +18,7 @@ export default function RecentOrders() {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/api/admin/orders/recent`, {
+      .get(`${import.meta.env.VITE_API_URL}/v1/admin/orders/recent`, {
         withCredentials: true,
       })
       .then((res) => setOrders(res.data?.slice(0, 8) || []))

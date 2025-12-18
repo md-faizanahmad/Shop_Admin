@@ -26,6 +26,7 @@ export default function ProductHighlights({
         {highlights.map((h, i) => (
           <div key={i} className="flex gap-3">
             <input
+              type="text"
               className="flex-1 px-4 py-3 border rounded-xl"
               value={h}
               onChange={(e) =>

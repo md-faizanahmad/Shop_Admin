@@ -20,7 +20,7 @@ export default function BigStatCards() {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/api/admin/dashboard/stats`, {
+      .get(`${import.meta.env.VITE_API_URL}/v1/admin/dashboard/stats`, {
         withCredentials: true,
       })
       .then((res) => setStats(res.data))

@@ -1,0 +1,47 @@
+{
+  "name": "MyAZStore Admin Console",
+  "short_name": "AZ-Admin",
+  "description": "Secure Admin Access Panel with MFA / 2FA, trusted sessions & privileged dashboard.",
+  "start_url": "/dashboard?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B0E14",
+  "theme_color": "#1f6feb",
+  "lang": "en-US",
+  "dir": "ltr",
+  "categories": ["business", "productivity", "security"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/icons/admin-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/admin-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/admin-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screens/admin-dashboard.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "Dashboard Overview"
+    },
+    {
+      "src": "/screens/login-secure.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "Secure Login with MFA"
+    }
+  ]
+}

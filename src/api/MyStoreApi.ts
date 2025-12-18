@@ -1,4 +1,4 @@
-// src/api/MyStoreApi.ts
+// src/v1/MyStoreApi.ts
 import axios from "axios";
 
 export const MyStoreApi = axios.create({

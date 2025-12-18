@@ -23,6 +23,7 @@ export default function ProductOffers({ offers, setOffers }: Props) {
         {offers.map((offer, i) => (
           <div key={i} className="flex gap-3">
             <input
+              type="text"
               className="flex-1 px-4 py-3 border rounded-xl"
               value={offer}
               onChange={(e) =>

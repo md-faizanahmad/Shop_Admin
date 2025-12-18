@@ -31,6 +31,7 @@ export default function ProductSpecifications({
         {specifications.map((spec, i) => (
           <div key={i} className="flex gap-3">
             <input
+              type="text"
               className="w-full px-4 py-3 border rounded-xl"
               value={spec.key}
               onChange={(e) =>

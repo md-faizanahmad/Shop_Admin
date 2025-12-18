@@ -22,7 +22,7 @@ export default function OrderStatusCards() {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/api/admin/dashboard/charts`, {
+      .get(`${import.meta.env.VITE_API_URL}/v1/admin/dashboard/charts`, {
         withCredentials: true,
       })
       .then((res) => setData(res.data))

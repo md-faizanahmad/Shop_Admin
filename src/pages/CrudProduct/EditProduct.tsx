@@ -28,7 +28,7 @@
 //         const res = await axios.get<{
 //           success: boolean;
 //           products: ProductFull[];
-//         }>(`${API_URL}/api/products`);
+//         }>(`${API_URL}/v1/products`);
 //         const found = res.data.products.find((p) => p._id === id) ?? null;
 //         setProduct(found);
 //       } catch {
@@ -70,7 +70,7 @@
 //             }
 //           : { ...payload, imageUrl };
 
-//       await axios.put(`${API_URL}/api/products/${id}`, body, {
+//       await axios.put(`${API_URL}/v1/products/${id}`, body, {
 //         withCredentials: true,
 //       });
 //       toast.success("Product updated");
@@ -148,7 +148,7 @@
 
 //     axios
 //       .get<{ success: boolean; product: ProductResponse }>(
-//         `${API_URL}/api/products/${id}`,
+//         `${API_URL}/v1/products/${id}`,
 //         {
 //           withCredentials: true,
 //         }
@@ -173,7 +173,7 @@
 //     if (!id) return;
 //     setLoading(true);
 //     try {
-//       await axios.put(`${API_URL}/api/products/${id}`, formData, {
+//       await axios.put(`${API_URL}/v1/products/${id}`, formData, {
 //         withCredentials: true,
 //         headers: { "Content-Type": "multipart/form-data" },
 //       });
@@ -234,24 +234,30 @@
 //   );
 // }
 //////////////////////////// update with costprice
+// src/pages/products/EditProduct.tsx
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import axios, { AxiosError } from "axios";
-import ProductForm, { type ProductFormData } from "./ProductForm";
+import axios, { type AxiosError } from "axios";
+import type { ProductFormData } from "./ProductForm";
+import ProductForm from "./ProductForm";
 
+interface ProductImage {
+  url: string;
+  publicId: string;
+}
 interface ProductResponse {
   _id: string;
   name: string;
   description: string;
   price: number;
-  costPrice?: number; // NEW FIELD
+  costPrice?: number;
   discountPrice?: number;
   stock: number;
-  category: { _id: string; name: string } | string;
-  highlights: string[];
-  specifications: Record<string, string>;
-  images: string[];
+  category: { _id: string; name?: string } | string;
+  highlights?: string[];
+  specifications?: Record<string, string>;
+  images?: ProductImage[]; // this not thumbnail
   imageUrl?: string;
 }
 
@@ -263,7 +269,6 @@ export default function EditProduct() {
   const [fetching, setFetching] = useState(true);
   const API_URL = import.meta.env.VITE_API_URL as string;
 
-  /* ---------------- FETCH PRODUCT ---------------- */
   useEffect(() => {
     if (!id) {
       navigate("/dashboard/products");
@@ -271,10 +276,9 @@ export default function EditProduct() {
     }
 
     let isMounted = true;
-
     axios
       .get<{ success: boolean; product: ProductResponse }>(
-        `${API_URL}/api/products/${id}`,
+        `${API_URL}/v1/products/${id}`,
         { withCredentials: true }
       )
       .then((res) => {
@@ -293,58 +297,72 @@ export default function EditProduct() {
     };
   }, [id, API_URL, navigate]);
 
-  /* ---------------- SUBMIT ---------------- */
   const handleSubmit = async (formData: FormData) => {
     if (!id) return;
     setLoading(true);
-
     try {
-      await axios.put(`${API_URL}/api/products/${id}`, formData, {
-        withCredentials: true,
-        headers: { "Content-Type": "multipart/form-data" },
+      await axios.put(`${API_URL}/v1/products/${id}`, formData, {
+        withCredentials: true, // keep cookies if used
       });
 
       toast.success("Product updated!");
       navigate("/dashboard/products");
     } catch (error) {
       let message = "Failed to update product";
-
       if (axios.isAxiosError(error)) {
         const err = error as AxiosError<{ message?: string }>;
         message = err.response?.data?.message ?? message;
       }
-
       toast.error(message);
     } finally {
       setLoading(false);
     }
   };
 
-  /* ---------------- STATES ---------------- */
   if (fetching) return <div className="p-10 text-center">Loading...</div>;
-
   if (!product)
     return (
       <div className="p-10 text-center text-red-600">Product not found</div>
     );
 
-  /* ---------------- INITIAL FORM DATA ---------------- */
+  // convert specifications (Record) -> SpecificationItem[] for store
+  const specsArray =
+    product.specifications && Object.keys(product.specifications).length > 0
+      ? Object.entries(product.specifications).map(([k, v]) => ({
+          key: String(k),
+          value: String(v ?? ""),
+        }))
+      : [{ key: "", value: "" }];
+
   const initialData: Partial<ProductFormData> = {
     name: product.name,
-    description: product.description,
-    price: product.price,
-    costPrice: product.costPrice ?? product.price, // fallback
-    discountPrice: product.discountPrice ?? 0,
-    stock: product.stock,
+    description: product.description ?? "",
+    price: product.price !== undefined ? String(product.price) : "",
+    costPrice:
+      product.costPrice !== undefined
+        ? String(product.costPrice)
+        : product.price !== undefined
+        ? String(product.price)
+        : "",
+    discountPrice:
+      product.discountPrice !== undefined ? String(product.discountPrice) : "0",
+    stock: product.stock !== undefined ? String(product.stock) : "0",
     category:
       typeof product.category === "object"
         ? product.category._id
         : product.category,
-    highlights: product.highlights,
-    specifications: product.specifications,
-    images:
-      product.images.length > 0
-        ? product.images
+    highlights: Array.isArray(product.highlights) ? product.highlights : [""],
+    specifications: specsArray,
+    // imagePreviews:
+    //   product.images && product.images.length > 0
+    //     ? product.images
+    //     : product.imageUrl
+    //     ? [product.imageUrl]
+    //     : [],
+
+    imagePreviews:
+      product.images && product.images.length > 0
+        ? product.images.map((img) => img.url)
         : product.imageUrl
         ? [product.imageUrl]
         : [],
@@ -364,7 +382,6 @@ export default function EditProduct() {
       <ProductForm
         initial={initialData}
         onSubmit={handleSubmit}
-        submitLabel="Update Product"
         loading={loading}
       />
     </div>

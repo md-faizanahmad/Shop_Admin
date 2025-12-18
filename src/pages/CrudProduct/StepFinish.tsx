@@ -1,9 +1,8 @@
 // src/components/products/StepFinish.tsx
 import BackButton from "@/shared/BackButton";
-import LazyCard from "@/shared/LazyCard";
 import StepWrapper from "@/shared/StepWrapper";
 import { motion } from "framer-motion";
-import { Sparkles, Zap, FileText, Tag, Package } from "lucide-react";
+import { Sparkles, Package } from "lucide-react";
 
 type Props = {
   onSubmit: (data: FormData) => Promise<void>; // <-- Now accepts FormData
@@ -39,31 +38,6 @@ export default function StepFinish({ onSubmit, loading, onBack }: Props) {
         </motion.div>
 
         <h2 className="text-4xl font-bold mb-4">Your product is ready!</h2>
-        <p className="text-xl text-gray-600 mb-12">
-          Skip the boring parts and publish instantly
-        </p>
-
-        <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-12">
-          <LazyCard
-            title="Auto-fill highlights & specs"
-            price="₹29"
-            icon={<FileText />}
-            gradient="from-emerald-500 to-teal-500"
-          />
-          <LazyCard
-            title="AI SEO description"
-            price="₹39"
-            icon={<Tag />}
-            gradient="from-purple-500 to-pink-500"
-          />
-          <LazyCard
-            title="Do everything + publish now"
-            price="₹99"
-            icon={<Zap />}
-            gradient="from-orange-500 to-red-500"
-            popular
-          />
-        </div>
 
         <div className="flex gap-6 justify-center">
           <BackButton onClick={onBack} label="Back to Photos" />

@@ -15,7 +15,7 @@
 //   useEffect(() => {
 //     const fetchCustomer = async () => {
 //       try {
-//         const res = await axios.get(`${API_URL}/api/admin/customers/${id}`, {
+//         const res = await axios.get(`${API_URL}/v1/admin/customers/${id}`, {
 //           withCredentials: true, // Critical!
 //         });
 //         setCustomer(res.data.user);
@@ -194,7 +194,7 @@ export default function CustomerDetailsPage() {
 
       try {
         const response = await axios.get<{ user: Customer }>(
-          `${API_URL}/api/admin/customers/${id}`,
+          `${API_URL}/v1/admin/customers/${id}`,
           { withCredentials: true }
         );
         setCustomer(response.data.user);

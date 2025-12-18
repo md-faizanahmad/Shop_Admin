@@ -8,7 +8,7 @@ export default function BackButton({
   return (
     <button
       onClick={onClick}
-      className="flex-1 py-5 border-2 border-gray-300 rounded-2xl font-bold hover:bg-gray-50 transition"
+      className="flex-1 py-5 rounded-2xl font-bold  transition"
     >
       {label}
     </button>

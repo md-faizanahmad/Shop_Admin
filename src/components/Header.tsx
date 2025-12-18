@@ -205,7 +205,7 @@ const Header = ({ onToggleSidebar }: HeaderProps) => {
   };
 
   return (
-    <header className="sticky top-0 z-30 bg-white border-b border-gray-200 shadow-sm">
+    <header className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm">
       <div className="flex items-center justify-between px-4 py-4 md:px-6 lg:px-8">
         {/* LEFT: Menu + Greeting + Date/Time */}
         <div className="flex items-center gap-4">
@@ -259,7 +259,7 @@ const Header = ({ onToggleSidebar }: HeaderProps) => {
               </p>
               <p className="text-xs text-gray-500">Administrator</p>
             </div>
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-lg">
+            <div className="w-10 h-10 rounded-full bg-linear-to-br from-sky-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-lg">
               {admin?.name?.charAt(0).toUpperCase() || "A"}
             </div>
           </div>

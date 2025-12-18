@@ -50,7 +50,11 @@ export default function StepPricing({
       />
       <div className="flex gap-4 mt-8">
         <BackButton onClick={onBack} />
-        <NextButton onClick={onNext} label="Next: Photos" disabled={!isValid} />
+        <NextButton
+          onClick={onNext}
+          label="Next: Spec and Highlights "
+          disabled={!isValid}
+        />
       </div>
     </StepWrapper>
   );

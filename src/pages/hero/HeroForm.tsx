@@ -127,17 +127,7 @@ import HeroBadges from "./HeroBadges";
 import HeroCTAs from "./HeroCTAs";
 import HeroImageUpload from "./HeroImageUpload";
 import { Save } from "lucide-react";
-
-export type HeroData = {
-  liveBadge: { enabled: boolean; text: string };
-  headline: string;
-  gradientHeadline: string;
-  subheadline: string;
-  primaryCTA: { text: string; link: string };
-  secondaryCTA: { text: string; link: string };
-  saleBadge: { enabled: boolean; text: string };
-  backgroundImage: string;
-};
+import type { HeroData } from "@/types/heroformdata";
 
 type Props = {
   initial?: Partial<HeroData>;
@@ -164,6 +154,7 @@ export default function HeroForm({ initial = {}, onSubmit }: Props) {
   );
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState(initial.backgroundImage || "");
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -179,11 +170,16 @@ export default function HeroForm({ initial = {}, onSubmit }: Props) {
     fd.append("saleBadge", JSON.stringify(saleBadge));
     if (imageFile) fd.append("backgroundImage", imageFile);
 
-    await onSubmit(fd);
+    try {
+      setSubmitting(true);
+      await onSubmit(fd);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-10">
+    <form onSubmit={handleSubmit} className="space-y-8">
       <HeroTextFields
         headline={headline}
         setHeadline={setHeadline}
@@ -213,14 +209,14 @@ export default function HeroForm({ initial = {}, onSubmit }: Props) {
         setImageFile={setImageFile}
       />
 
-      {/* Premium Sticky Save Button */}
-      <div className="sticky bottom-0 left-0 right-0 -mx-8 -mb-8 bg-linear-to-r from-blue-600 to-purple-600 p-6 shadow-2xl">
+      <div className="pt-2">
         <button
           type="submit"
-          className="w-full max-w-2xl mx-auto py-5 bg-white text-black text-xl font-bold rounded-2xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
+          disabled={submitting}
+          className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-black disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          <Save className="w-6 h-6" />
-          Save Hero Section
+          <Save className="w-4 h-4" />
+          {submitting ? "Saving…" : "Save Hero Section"}
         </button>
       </div>
     </form>

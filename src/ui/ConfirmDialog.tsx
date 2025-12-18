@@ -1,12 +1,16 @@
+// src/components/ui/ConfirmDialog.tsx
 import { X } from "lucide-react";
-import { useEffect } from "react";
+import { useCountdown } from "@/hooks/useCountdown";
+import React from "react";
 
-interface ConfirmDialogProps {
+interface Props {
   open: boolean;
   title: string;
   description?: string;
   confirmText?: string;
   cancelText?: string;
+  variant?: "danger" | "warning" | "success";
+  autoCloseSeconds?: number;
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -15,60 +19,66 @@ export default function ConfirmDialog({
   open,
   title,
   description,
-  confirmText = "Delete",
+  confirmText = "Confirm",
   cancelText = "Cancel",
+  variant = "danger",
+  autoCloseSeconds,
   onConfirm,
   onCancel,
-}: ConfirmDialogProps) {
-  useEffect(() => {
-    function onEsc(e: KeyboardEvent) {
-      if (e.key === "Escape") onCancel();
-    }
-    if (open) window.addEventListener("keydown", onEsc);
-    return () => window.removeEventListener("keydown", onEsc);
+}: Props) {
+  const seconds = useCountdown(open ? autoCloseSeconds : undefined);
+
+  React.useEffect(() => {
+    const esc = (e: KeyboardEvent) => e.key === "Escape" && open && onCancel();
+    window.addEventListener("keydown", esc);
+    return () => window.removeEventListener("keydown", esc);
   }, [open, onCancel]);
 
   if (!open) return null;
 
+  const colors = {
+    danger: "bg-red-600 hover:bg-red-700 ring-red-500",
+    warning: "bg-yellow-600 hover:bg-yellow-700 ring-yellow-500",
+    success: "bg-emerald-600 hover:bg-emerald-700 ring-emerald-500",
+  };
+
   return (
-    <div className="fixed inset-0 z-50">
-      {/* overlay */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-[1px]"
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onCancel}
       />
-      {/* dialog */}
-      <div className="absolute inset-0 flex items-center justify-center p-4">
-        <div className="w-full max-w-sm rounded-xl bg-white dark:bg-gray-900 shadow-lg">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-800">
-            <h3 className="text-sm font-semibold">{title}</h3>
-            <button
-              className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-              onClick={onCancel}
-              aria-label="Close"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-          {description && (
-            <p className="px-4 pt-4 text-sm text-gray-600 dark:text-gray-300">
-              {description}
+      <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl animate-in fade-in zoom-in-95">
+        <div className="flex justify-between items-center p-6 border-b">
+          <h3 className="text-lg font-bold text-gray-900">{title}</h3>
+          <button
+            onClick={onCancel}
+            className="p-2 hover:bg-gray-100 rounded-lg"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <div className="p-6">
+          <p className="text-gray-700 leading-relaxed">{description}</p>
+          {autoCloseSeconds && seconds > 0 && (
+            <p className="mt-4 text-sm text-gray-500">
+              Auto-closing in {seconds}s...
             </p>
           )}
-          <div className="px-4 py-3 flex justify-end gap-2">
-            <button
-              onClick={onCancel}
-              className="px-3 py-1.5 rounded border text-sm hover:bg-gray-50 dark:hover:bg-gray-800"
-            >
-              {cancelText}
-            </button>
-            <button
-              onClick={onConfirm}
-              className="px-3 py-1.5 rounded bg-red-600 text-white text-sm hover:bg-red-700"
-            >
-              {confirmText}
-            </button>
-          </div>
+        </div>
+        <div className="flex justify-end gap-3 p-6 bg-gray-50">
+          <button
+            onClick={onCancel}
+            className="px-6 py-2.5 rounded-xl font-medium bg-gray-100 hover:bg-gray-200 transition"
+          >
+            {cancelText}
+          </button>
+          <button
+            onClick={onConfirm}
+            className={`px-6 py-2.5 rounded-xl font-medium text-white ${colors[variant]} transition hover:scale-105 active:scale-95`}
+          >
+            {confirmText} {autoCloseSeconds && seconds > 0 && `(${seconds}s)`}
+          </button>
         </div>
       </div>
     </div>

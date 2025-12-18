@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "react-toastify/dist/ReactToastify.css";
-
+@import "swiper/css";
 /* Base Font */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -33,4 +33,28 @@ nav::-webkit-scrollbar-track {
 nav::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 2px;
+}
+
+/*Toast container /*
+/* Make toast fit small screens */
+@media (max-width: 480px) {
+  .Toastify__toast-container {
+    width: 92% !important;
+    left: 50% !important;
+    right: unset !important;
+    transform: translateX(-50%);
+    padding: 0;
+  }
+}
+
+/* Slightly bigger phones/tablets */
+@media (max-width: 768px) {
+  .Toastify__toast-container--top-right {
+    right: 10px !important;
+  }
+
+  .Toastify__toast {
+    margin: 0.5rem 0 !important;
+    border-radius: 12px !important;
+  }
 }

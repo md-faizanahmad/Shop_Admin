@@ -18,7 +18,7 @@ export default function OrderManage() {
   // ----------------------------
   async function load() {
     try {
-      const res = await axios.get(`${API}/api/orders/admin/order/${orderId}`, {
+      const res = await axios.get(`${API}/v1/orders/admin/order/${orderId}`, {
         withCredentials: true,
       });
 
@@ -36,7 +36,7 @@ export default function OrderManage() {
   async function updateStatus(status: Order["status"]) {
     try {
       await axios.put(
-        `${API}/api/orders/update-status/${orderId}`,
+        `${API}/v1/orders/update-status/${orderId}`,
         { status },
         { withCredentials: true }
       );
@@ -97,7 +97,7 @@ export default function OrderManage() {
         ))}
       </div>
       <a
-        href={`${API}/api/orders/admin/invoice/${order._id}`}
+        href={`${API}/v1/orders/admin/invoice/${order._id}`}
         target="_blank"
         className="text-green-600 hover:underline"
       >

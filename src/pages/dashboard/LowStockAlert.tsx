@@ -16,7 +16,7 @@ export default function LowStockAlert() {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/api/admin/products/low-stock`, {
+      .get(`${import.meta.env.VITE_API_URL}/v1/admin/products/low-stock`, {
         withCredentials: true,
       })
       .then((res) => setLowStock(res.data?.slice(0, 6) || []))

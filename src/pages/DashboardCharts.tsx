@@ -28,10 +28,15 @@ ChartJS.register(
   Legend
 );
 
+interface OrderStatusStat {
+  _id: "placed" | "processing" | "shipping" | "delivered" | "cancelled";
+  count: number;
+}
+
 interface ChartData {
   last7Days: { date: string; revenue: number }[];
-  monthlyRevenue: number; // this month total
-  statusBreakdown: { status: string; count: number }[];
+  monthlyRevenue: number;
+  statusBreakdown: OrderStatusStat[];
 }
 
 export default function DashboardCharts() {
@@ -41,7 +46,7 @@ export default function DashboardCharts() {
   useEffect(() => {
     const fetchChartData = async () => {
       try {
-        const res = await axios.get(`${API_BASE}/api/admin/dashboard/charts`, {
+        const res = await axios.get(`${API_BASE}/v1/admin/dashboard/charts`, {
           withCredentials: true,
         });
         setData(res.data.data);
@@ -110,22 +115,32 @@ export default function DashboardCharts() {
 
   // Status Doughnut
   const doughnutData = {
-    // labels: data.statusBreakdown.map((s) =>
-    //   s.status === "shipping"
-    //     ? "Shipped"
-    //     : s.status.charAt(0).toUpperCase() + s.status.slice(1)
-    // ),
     labels: data.statusBreakdown.map((s) => {
-      const st = s?.status || "unknown";
-      return st === "shipping"
-        ? "Shipped"
-        : st.charAt(0).toUpperCase() + st.slice(1);
+      switch (s._id) {
+        case "shipping":
+          return "Shipped";
+        case "processing":
+          return "Processing";
+        case "placed":
+          return "Placed";
+        case "delivered":
+          return "Delivered";
+        case "cancelled":
+          return "Cancelled";
+        default:
+          return "Checking";
+      }
     }),
-
     datasets: [
       {
         data: data.statusBreakdown.map((s) => s.count),
-        backgroundColor: ["#f59e0b", "#8b5cf6", "#10b981", "#ef4444"],
+        backgroundColor: [
+          "#f59e0b", // placed
+          "#8b5cf6", // processing
+          "#10b981", // shipped
+          "#3b82f6", // delivered
+          "#ef4444", // cancelled
+        ],
         borderWidth: 0,
       },
     ],

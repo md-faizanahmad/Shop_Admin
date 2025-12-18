@@ -181,6 +181,7 @@ import {
   User,
   X,
   ChevronRight,
+  Bell,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -207,6 +208,11 @@ const navItems: (any | { divider: string })[] = [
     name: "Customer Insight",
     icon: UsersRound,
     path: "/dashboard/customers-insight",
+  },
+  {
+    name: "Notification History",
+    icon: Bell,
+    path: "/dashboard/notification-history",
   },
   { divider: "MARKETING" },
   { name: "Hero Banner", icon: Image, path: "/dashboard/setupHero" },
@@ -240,7 +246,7 @@ export default function Sidebar({ isOpen, onToggle, onClose }: SidebarProps) {
       {/* Sidebar */}
       <aside
         className={`
-          fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-gray-100 shadow-2xl
+          fixed inset-y-0 left-0 z-50 w-60 bg-white border-r border-gray-100 shadow-2xl
           flex flex-col
           transition-transform duration-400 ease-out
           lg:translate-x-0 lg:static lg:shadow-xl
@@ -296,7 +302,7 @@ export default function Sidebar({ isOpen, onToggle, onClose }: SidebarProps) {
                   to={item.path}
                   onClick={handleLinkClick}
                   className={`
-                    group relative flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300
+                    group relative flex items-center gap-4 px-3 py-3 rounded-2xl transition-all duration-300
                     ${
                       isActive
                         ? "bg-linear-to-r from-blue-600 to-sky-600 text-white shadow-lg"

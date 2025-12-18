@@ -15,7 +15,7 @@ export default function AddProduct() {
   const handleSubmit = async (formData: FormData): Promise<void> => {
     setLoading(true);
     try {
-      await axios.post(`${API_URL}/api/products/create`, formData, {
+      await axios.post(`${API_URL}/v1/products/create`, formData, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -38,7 +38,7 @@ export default function AddProduct() {
     <div className="min-h-screen bg-gray-50">
       {/* Sticky Top Bar – Zero wasted space */}
       <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-xl border-b border-gray-100">
-        <div className="px-6 py-4">
+        <div className="px-1 py-1">
           <div className="max-w-5xl mx-auto flex items-center justify-between">
             {/* Premium Back Button */}
             <button
@@ -48,7 +48,7 @@ export default function AddProduct() {
               <div className="p-2 bg-gray-100 rounded-xl group-hover:bg-sky-100 group-hover:text-sky-600 transition-all">
                 <ArrowLeft className="w-5 h-5" />
               </div>
-              <span className="font-semibold text-gray-700">Back</span>
+              <span className="font-bold text-gray-700 ">Back</span>
             </button>
 
             {/* Title + Icon */}

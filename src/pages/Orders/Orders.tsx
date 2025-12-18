@@ -14,7 +14,7 @@
 //       setLoading(true);
 //       try {
 //         const res = await axios.get<{ success: boolean; orders: Order[] }>(
-//           `${API_URL}/api/orders`,
+//           `${API_URL}/v1/orders`,
 //           { withCredentials: true }
 //         );
 //         setOrders(res.data.orders ?? []);
@@ -267,7 +267,7 @@ export default function OrdersPage() {
 
   async function loadOrders() {
     try {
-      const res = await axios.get(`${API}/api/orders`, {
+      const res = await axios.get(`${API}/v1/orders`, {
         withCredentials: true,
       });
       setOrders(res.data.orders);
@@ -434,7 +434,7 @@ export default function OrdersPage() {
                     Manage
                   </a>
                   <a
-                    href={`${API}/api/orders/admin/invoice/${order._id}`}
+                    href={`${API}/v1/orders/admin/invoice/${order._id}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-2 border border-gray-300 px-4 py-2.5 rounded-xl hover:bg-gray-50 transition"

@@ -15,7 +15,7 @@ export default function TopProducts() {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/api/admin/dashboard/top-products`, {
+      .get(`${import.meta.env.VITE_API_URL}/v1/admin/dashboard/top-products`, {
         withCredentials: true,
       })
       .then((res) => setProducts(res.data?.slice(0, 5) || []))

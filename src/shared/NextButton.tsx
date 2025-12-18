@@ -16,7 +16,7 @@ export default function NextButton({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`w-full py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all
+      className={`w-full mt-4 py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all
         ${
           disabled
             ? "bg-gray-300 text-gray-500 cursor-not-allowed"

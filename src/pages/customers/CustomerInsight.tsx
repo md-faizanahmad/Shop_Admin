@@ -44,11 +44,11 @@ export default function CustomerInsight() {
 
   useEffect(() => {
     Promise.all([
-      axios.get<{ users: Customer[] }>(`${API_URL}/api/admin/customers`, {
+      axios.get<{ users: Customer[] }>(`${API_URL}/v1/admin/customers`, {
         withCredentials: true,
       }),
       axios.get<{ data: CustomerStats }>(
-        `${API_URL}/api/admin/customers/analytics`,
+        `${API_URL}/v1/admin/customers/analytics`,
         {
           withCredentials: true,
         }
