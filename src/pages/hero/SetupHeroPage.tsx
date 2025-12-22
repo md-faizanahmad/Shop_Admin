@@ -246,6 +246,7 @@ export default function SetupHeroPage() {
     try {
       const res = await api.put("/v1/hero", formData);
       setHero(res.data.hero);
+
       toast.success("Hero section updated successfully!");
       setIsEditOpen(false);
     } catch (err) {
@@ -276,7 +277,7 @@ export default function SetupHeroPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-slate-200">
+      <header className="sticky top-0 z-30 bg-white/80 backdrop-blur border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
           <button
             onClick={() => navigate(-1)}
@@ -288,7 +289,7 @@ export default function SetupHeroPage() {
 
           <div className="text-right">
             <h1 className="text-lg sm:text-xl font-semibold text-slate-900">
-              Hero Section
+              Hero Section (under maintaince)
             </h1>
             <p className="text-xs text-slate-500">
               Preview and edit your homepage hero

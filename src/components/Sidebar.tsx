@@ -345,7 +345,7 @@ export default function Sidebar({ isOpen, onToggle, onClose }: SidebarProps) {
         </nav>
 
         {/* Footer - Always visible */}
-        <div className="sticky bottom-0 bg-white border-t border-gray-100 p-5 text-center">
+        <div className="sticky bottom-0 bg-white border-t border-gray-100 p-5 text-center ">
           <p className="text-xs text-gray-400">© 2025 AZ Shop</p>
         </div>
       </aside>

@@ -60,11 +60,68 @@ export async function getStockStatus() {
   return res.data;
 }
 
-export async function listNotifications(unreadOnly = false) {
+// lib/api.ts
+
+export type CustomerQuery = {
+  page: number;
+  limit: number;
+
+  q?: string;
+  sortBy?: string;
+  order?: "asc" | "desc";
+
+  // ✅ ADD THESE
+  period?: "all" | "7d" | "30d" | "month";
+  repeat?: "new" | "repeat";
+};
+
+export async function fetchCustomers(query: CustomerQuery) {
+  const res = await axios.get(`${baseURL}/v1/admin/customers`, {
+    params: query,
+    withCredentials: true,
+  });
+
+  return res.data;
+}
+export async function fetchCustomerAnalytics() {
+  const res = await axios.get(`${baseURL}/v1/admin/customers/analytics`, {
+    withCredentials: true,
+  });
+  return res.data;
+}
+// listNotifications(); // all
+// listNotifications({ unreadOnly: true });
+// listNotifications({ type: "low_stock" });
+// listNotifications({ unreadOnly: true, type: "new_order" });
+
+export async function listNotifications({
+  unreadOnly = false,
+  type,
+}: {
+  unreadOnly?: boolean;
+  type?: string;
+} = {}) {
+  const params = new URLSearchParams();
+
+  if (unreadOnly) params.append("unreadOnly", "true");
+  if (type) params.append("type", type);
+
   const res = await axios.get(
-    `${baseURL}/v1/admin/notifications?unreadOnly=${unreadOnly}`,
+    `${baseURL}/v1/admin/notifications?${params.toString()}`,
     { withCredentials: true }
   );
+
+  return res.data;
+}
+
+export async function deleteNotifications(ids: string[]) {
+  if (!ids.length) return;
+
+  const res = await axios.delete(`${baseURL}/v1/admin/notifications`, {
+    data: { ids },
+    withCredentials: true,
+  });
+
   return res.data;
 }
 

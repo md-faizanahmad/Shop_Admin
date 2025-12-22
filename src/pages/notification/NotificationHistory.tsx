@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
-import { listNotifications, markNotificationsRead } from "@/lib/api";
-
-type Notification = {
-  _id: string;
-  type: string;
-  title: string;
-  message: string;
-  link?: string;
-  read: boolean;
-  createdAt: string;
-};
+import {
+  listNotifications,
+  markNotificationsRead,
+  deleteNotifications,
+} from "@/lib/api";
+import type { Notification } from "@/types/notification.types.ts";
+import NotificationCard from "./NotificationCard";
+import NotificationToolbar from "./NotificationToolbar";
 
 export default function NotificationHistory() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [selected, setSelected] = useState<Record<string, boolean>>({});
+  const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,79 +19,77 @@ export default function NotificationHistory() {
   }, []);
 
   async function fetchAll() {
-    try {
-      const res = await listNotifications(false);
-      const sorted = (res.notifications || []).sort(
-        (a: Notification, b: Notification) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
-      setNotifications(sorted);
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
+    const res = await listNotifications({ unreadOnly: false });
+
+    setNotifications(res.notifications || []);
+    setLoading(false);
   }
 
-  async function markAllRead() {
-    const unreadIds = notifications.filter((n) => !n.read).map((n) => n._id);
+  const filtered = notifications.filter((n) => {
+    if (filter === "unread") return !n.read;
+    if (filter === "all") return true;
+    return n.type === filter;
+  });
 
-    if (!unreadIds.length) return;
+  const selectedIds = Object.keys(selected).filter((id) => selected[id]);
 
-    await markNotificationsRead(unreadIds);
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  async function markRead(id: string) {
+    await markNotificationsRead([id]);
+    setNotifications((prev) =>
+      prev.map((n) => (n._id === id ? { ...n, read: true } : n))
+    );
+  }
+
+  async function deleteOne(id: string) {
+    await deleteNotifications([id]);
+    setNotifications((prev) => prev.filter((n) => n._id !== id));
+  }
+
+  async function deleteSelected() {
+    await deleteNotifications(selectedIds);
+    setNotifications((prev) =>
+      prev.filter((n) => !selectedIds.includes(n._id))
+    );
+    setSelected({});
   }
 
   return (
-    <div className="max-w-5xl mx-auto p-4 sm:p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold">Notification History</h1>
+    <div className="max-w-6xl mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Notification History</h1>
 
-        <button
-          onClick={markAllRead}
-          className="text-sm text-blue-600 hover:underline"
-        >
-          Mark all as read
-        </button>
-      </div>
+      <NotificationToolbar
+        total={filtered.length}
+        selectedCount={selectedIds.length}
+        allSelected={
+          filtered.length > 0 && filtered.every((n) => selected[n._id])
+        }
+        onSelectAll={(checked) => {
+          const map: Record<string, boolean> = {};
+          filtered.forEach((n) => (map[n._id] = checked));
+          setSelected(map);
+        }}
+        onDeleteSelected={deleteSelected}
+        filter={filter}
+        setFilter={setFilter}
+      />
 
-      {/* Content */}
       {loading ? (
-        <div className="text-gray-500">Loading notifications…</div>
-      ) : notifications.length === 0 ? (
-        <div className="text-gray-500">No notifications found</div>
+        <div className="mt-10 text-2xl text-center">Loading...</div>
+      ) : filtered.length === 0 ? (
+        <div>No notifications</div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {notifications.map((n) => (
-            <a
+          {filtered.map((n) => (
+            <NotificationCard
               key={n._id}
-              href={n.link || "#"}
-              className={`rounded-lg border p-4 transition hover:shadow-md ${
-                n.read ? "bg-white" : "bg-blue-50 border-blue-200"
-              }`}
-            >
-              {/* Title */}
-              <div className="flex items-start justify-between gap-2">
-                <h2 className="font-semibold text-sm sm:text-base">
-                  {n.title}
-                </h2>
-
-                {!n.read && (
-                  <span className="text-xs text-blue-600 font-medium">New</span>
-                )}
-              </div>
-
-              {/* Message */}
-              <p className="mt-1 text-sm text-gray-600 line-clamp-3">
-                {n.message}
-              </p>
-
-              {/* Footer */}
-              <div className="mt-3 text-xs text-gray-400">
-                {new Date(n.createdAt).toLocaleString()}
-              </div>
-            </a>
+              notification={n}
+              selected={!!selected[n._id]}
+              onSelect={(id, checked) =>
+                setSelected((p) => ({ ...p, [id]: checked }))
+              }
+              onRead={markRead}
+              onDelete={deleteOne}
+            />
           ))}
         </div>
       )}

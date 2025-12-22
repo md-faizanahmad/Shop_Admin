@@ -22,6 +22,7 @@ export interface WishlistItem {
 }
 
 export interface Customer {
+  ordersCount: number;
   _id: string;
   name: string;
   email: string;
@@ -33,3 +34,25 @@ export interface Customer {
   updatedAt: string;
   __v: number;
 }
+// src/admin/customers/types/customerStats.ts
+export interface CustomerStats {
+  totalCustomers: number;
+  newThisMonth: number;
+  returning: number;
+  repeatRate: number;
+  aov: number;
+  clv: number;
+  topCustomers: {
+    _id: string;
+    name: string;
+    orders: number;
+    spent: number;
+    lastOrder: string;
+  }[];
+  cityData: {
+    city: string;
+    customers: number;
+  }[];
+}
+export type PeriodFilter = "7d" | "30d" | "month" | undefined;
+export type RepeatFilter = "new" | "repeat" | undefined;

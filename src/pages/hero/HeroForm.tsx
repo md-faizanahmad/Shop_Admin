@@ -169,7 +169,6 @@ export default function HeroForm({ initial = {}, onSubmit }: Props) {
     fd.append("secondaryCTA", JSON.stringify(secondaryCTA));
     fd.append("saleBadge", JSON.stringify(saleBadge));
     if (imageFile) fd.append("backgroundImage", imageFile);
-
     try {
       setSubmitting(true);
       await onSubmit(fd);

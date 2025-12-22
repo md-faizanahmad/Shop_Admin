@@ -24,6 +24,7 @@ import InventoryAnalyticsPro from "./pages/analyticsPro/InventoryAnalyticsPro";
 import Setup2FA from "./components/auth/Setup2FA";
 import SecurityCenter from "./components/auth/SecurityCenter";
 import NotificationHistory from "./pages/notification/NotificationHistory";
+import ScrollToTop from "./helper/ScrollTop";
 
 export default function App() {
   return (
@@ -40,6 +41,7 @@ export default function App() {
         theme="light"
       />
       <Router>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Login />} />
 
