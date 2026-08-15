@@ -1,4 +1,6 @@
 export type HeroData = {
+  _id: string;
+
   liveBadge: { enabled: boolean; text: string };
   headline: string;
   gradientHeadline: string;
