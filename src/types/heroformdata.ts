@@ -7,4 +7,11 @@ export type HeroData = {
   secondaryCTA: { text: string; link: string };
   saleBadge: { enabled: boolean; text: string };
   backgroundImage: string;
+
+  // Mobile
+  mobileBackgroundImage: string;
+  isActive: boolean;
+  startAt: string | null;
+  endAt: string | null;
+  sortOrder: number;
 };

@@ -128,6 +128,7 @@ import HeroCTAs from "./HeroCTAs";
 import HeroImageUpload from "./HeroImageUpload";
 import { Save } from "lucide-react";
 import type { HeroData } from "@/types/heroformdata";
+import HeroCampaignSettings from "./HeroCampaignSettings";
 
 type Props = {
   initial?: Partial<HeroData>;
@@ -136,25 +137,43 @@ type Props = {
 
 export default function HeroForm({ initial = {}, onSubmit }: Props) {
   const [liveBadge, setLiveBadge] = useState(
-    initial.liveBadge || { enabled: true, text: "LIVE SALE" }
+    initial.liveBadge || { enabled: true, text: "LIVE SALE" },
   );
   const [headline, setHeadline] = useState(initial.headline || "");
   const [gradientHeadline, setGradientHeadline] = useState(
-    initial.gradientHeadline || ""
+    initial.gradientHeadline || "",
   );
   const [subheadline, setSubheadline] = useState(initial.subheadline || "");
   const [primaryCTA, setPrimaryCTA] = useState(
-    initial.primaryCTA || { text: "Shop Now", link: "/" }
+    initial.primaryCTA || { text: "Shop Now", link: "/" },
   );
   const [secondaryCTA, setSecondaryCTA] = useState(
-    initial.secondaryCTA || { text: "View Offers", link: "/" }
+    initial.secondaryCTA || { text: "View Offers", link: "/" },
   );
   const [saleBadge, setSaleBadge] = useState(
-    initial.saleBadge || { enabled: false, text: "Up to 70% Off" }
+    initial.saleBadge || { enabled: false, text: "Up to 70% Off" },
   );
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState(initial.backgroundImage || "");
+
+  const [mobileImageFile, setMobileImageFile] = useState<File | null>(null);
+  const [mobilePreview, setMobilePreview] = useState(
+    initial.mobileBackgroundImage || "",
+  );
+
   const [submitting, setSubmitting] = useState(false);
+
+  const [isActive, setIsActive] = useState(initial.isActive ?? true);
+
+  const [startAt, setStartAt] = useState(
+    initial.startAt ? initial.startAt.slice(0, 16) : "",
+  );
+
+  const [endAt, setEndAt] = useState(
+    initial.endAt ? initial.endAt.slice(0, 16) : "",
+  );
+
+  const [sortOrder, setSortOrder] = useState(initial.sortOrder ?? 1);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -168,7 +187,18 @@ export default function HeroForm({ initial = {}, onSubmit }: Props) {
     fd.append("primaryCTA", JSON.stringify(primaryCTA));
     fd.append("secondaryCTA", JSON.stringify(secondaryCTA));
     fd.append("saleBadge", JSON.stringify(saleBadge));
+
     if (imageFile) fd.append("backgroundImage", imageFile);
+
+    if (mobileImageFile) {
+      fd.append("mobileBackgroundImage", mobileImageFile);
+    }
+
+    fd.append("isActive", String(isActive));
+    fd.append("startAt", startAt);
+    fd.append("endAt", endAt);
+    fd.append("sortOrder", String(sortOrder));
+
     try {
       setSubmitting(true);
       await onSubmit(fd);
@@ -206,8 +236,20 @@ export default function HeroForm({ initial = {}, onSubmit }: Props) {
         preview={preview}
         setPreview={setPreview}
         setImageFile={setImageFile}
+        mobilePreview={mobilePreview}
+        setMobilePreview={setMobilePreview}
+        setMobileImageFile={setMobileImageFile}
       />
-
+      <HeroCampaignSettings
+        isActive={isActive}
+        setIsActive={setIsActive}
+        startAt={startAt}
+        setStartAt={setStartAt}
+        endAt={endAt}
+        setEndAt={setEndAt}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+      />
       <div className="pt-2">
         <button
           type="submit"

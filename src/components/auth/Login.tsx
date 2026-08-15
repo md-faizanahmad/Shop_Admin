@@ -49,18 +49,18 @@ export default function Login() {
   // If 2FA step is active → render sleek OTP screen instead of login form
   if (requires2FA) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="w-full max-w-sm bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-xl p-8 space-y-6">
-          <h2 className="text-center text-xl font-semibold text-gray-900 dark:text-white tracking-tight">
+      <div className="flex min-h-screen items-center justify-center bg-sky-100 ">
+        <div className="w-full max-w-sm bg-gray-50 backdrop-blur-2xl  rounded-2xl border border-gray-200  shadow-xl p-8 space-y-6">
+          <h2 className="text-center text-xl font-semibold text-gray-900  tracking-tight">
             Two-Factor Authentication
           </h2>
-          <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-center text-sm text-gray-700 ">
             Secure login verification required
           </p>
 
           <TwoFACode email={tempEmail} />
 
-          <p className="text-center text-[11px] text-gray-500 dark:text-gray-400">
+          <p className="text-center text-[11px] text-gray-500 ">
             Protected by Google Authenticator 2FA 🔐
           </p>
         </div>
@@ -69,17 +69,17 @@ export default function Login() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
-      <div className="w-full max-w-sm rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl p-8 space-y-8">
+    <div className="flex min-h-screen items-center justify-center bg-sky-100 ">
+      <div className="w-full max-w-sm rounded-2xl bg-gray-50 backdrop-blur-2xl  border border-gray-200  shadow-xl p-8 space-y-8">
         {/* Branding / Logo */}
         <div className="text-center space-y-2">
           <div className="mx-auto h-14 w-14 rounded-xl bg-linear-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
             A
           </div>
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
+          <h1 className="text-2xl font-semibold text-gray-900 ">
             Admin Access
           </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-gray-500 ">
             Sign in to continue to dashboard
           </p>
         </div>
@@ -87,7 +87,7 @@ export default function Login() {
         {/* Form */}
         <form onSubmit={handleLogin} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="block text-sm font-medium text-gray-700 ">
               Email
             </label>
             <input
@@ -97,12 +97,12 @@ export default function Login() {
               placeholder="example@domain.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 px-4 py-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition"
+              className="mt-2 w-full rounded-lg border border-gray-300  bg-gray-50  px-4 py-3 text-gray-900  focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="block text-sm font-medium text-gray-700 ">
               Password
             </label>
             <div className="relative mt-2">
@@ -112,13 +112,13 @@ export default function Login() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 px-4 py-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 transition pr-11"
+                className="w-full rounded-lg border border-gray-300  bg-gray-50  px-4 py-3 text-gray-900  focus:ring-2 focus:ring-blue-600 transition pr-11"
               />
 
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-4 flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                className="absolute inset-y-0 right-4 flex items-center text-gray-500  hover:text-gray-700 "
               >
                 {showPassword ? <EyeOff /> : <Eye />}
               </button>
@@ -135,7 +135,7 @@ export default function Login() {
         </form>
 
         {/* Footer */}
-        <p className="text-center text-[12px]  text-gray-500 dark:text-gray-400">
+        <p className="text-center text-[12px]  text-gray-500 ">
           Protected by
           <img
             src={googleIcon}

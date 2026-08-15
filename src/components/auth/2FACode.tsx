@@ -39,7 +39,7 @@ export default function TwoFACode({ email }: TwoFACodeProps) {
   return (
     <form onSubmit={submit2FA} className="space-y-6 mt-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label className="block text-sm font-medium text-gray-700  mb-2">
           Enter 6-Digit Authenticator Code
         </label>
         <input
@@ -50,7 +50,7 @@ export default function TwoFACode({ email }: TwoFACodeProps) {
           required
           value={code}
           onChange={(e) => setCode(e.target.value)}
-          className="w-full px-4 py-3 text-center text-xl tracking-widest rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
+          className="w-full px-4 py-3 text-center text-xl tracking-widest rounded-lg border border-gray-300  bg-white  text-gray-900  focus:ring-2 focus:ring-blue-500 outline-none"
           placeholder="••••••"
         />
       </div>
@@ -63,12 +63,13 @@ export default function TwoFACode({ email }: TwoFACodeProps) {
         {loading ? "Verifying..." : "Verify & Continue"}
       </button>
 
-      <p className="text-center text-[11px] mt-4 text-gray-500 dark:text-gray-400">
+      <p className="text-center text-[11px] mt-4 text-gray-500 ">
         Secured by{" "}
         <img
           src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/2560px-Google_2015_logo.svg.png"
           alt="Google"
           width={50}
+          className="m-auto"
           height={40}
         />{" "}
         Authenticator 2FA/MFA 🔐

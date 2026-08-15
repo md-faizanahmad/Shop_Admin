@@ -235,7 +235,7 @@ export default function SetupHeroPage() {
         console.error(
           "[Hero GET error]",
           err?.response?.status,
-          err?.response?.data
+          err?.response?.data,
         );
         toast.error("Failed to load hero section — try hard refresh");
         setLoading(false);
@@ -272,6 +272,7 @@ export default function SetupHeroPage() {
     primaryCTA: hero?.primaryCTA || { text: "Shop Now", link: "/" },
     secondaryCTA: hero?.secondaryCTA || { text: "Learn More", link: "/" },
     backgroundImage: hero?.backgroundImage || "",
+    mobileBackgroundImage: hero?.mobileBackgroundImage || "",
   };
 
   return (
