@@ -209,26 +209,30 @@
 /// update
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { ArrowLeft, Pencil, X } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import HeroForm from "./HeroForm";
-import HeroLivePreview from "./HeroLivePreview";
+// import HeroLivePreview from "./HeroLivePreview";
+import HeroBannerList from "./HeroBannerList";
 import type { HeroData } from "@/types/heroformdata";
 import { api } from "@/lib/api";
 
 export default function SetupHeroPage() {
   const navigate = useNavigate();
 
-  const [hero, setHero] = useState<HeroData | null>(null);
+  // const [hero, setHero] = useState<HeroData | null>(null);
+  const [heroes, setHeroes] = useState<HeroData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  // const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editingHero, setEditingHero] = useState<HeroData | null>(null);
 
   useEffect(() => {
     api
       .get("/v1/hero")
       .then((res) => {
-        setHero(res.data.hero || null);
+        // setHero(res.data.hero || null);
+        setHeroes(res.data.heroes || []);
         setLoading(false);
       })
       .catch((err) => {
@@ -242,16 +246,48 @@ export default function SetupHeroPage() {
       });
   }, []);
 
+  // const handleSubmit = async (formData: FormData): Promise<void> => {
+  //   try {
+  //     const res = await api.put("/v1/hero", formData);
+  //     setHero(res.data.hero);
+
+  //     toast.success("Hero section updated successfully!");
+  //     setIsEditOpen(false);
+  //   } catch (err) {
+  //     console.error(err);
+  //     toast.error("Failed to save hero section");
+  //   }
+  // };
+
   const handleSubmit = async (formData: FormData): Promise<void> => {
     try {
-      const res = await api.put("/v1/hero", formData);
-      setHero(res.data.hero);
+      const res = editingHero
+        ? await api.put(`/v1/hero/banners/${editingHero._id}`, formData)
+        : await api.post("/v1/hero/banners", formData);
 
-      toast.success("Hero section updated successfully!");
+      const savedHero = res.data.hero;
+
+      setHeroes((current) => {
+        if (editingHero) {
+          return current.map((hero) =>
+            hero._id === savedHero._id ? savedHero : hero,
+          );
+        }
+
+        return [...current, savedHero];
+      });
+
+      toast.success(
+        editingHero
+          ? "Hero banner updated successfully!"
+          : "Hero banner created successfully!",
+      );
+
       setIsEditOpen(false);
+      setEditingHero(null);
     } catch (err) {
       console.error(err);
-      toast.error("Failed to save hero section");
+      toast.error("Failed to save hero banner");
     }
   };
 
@@ -263,17 +299,17 @@ export default function SetupHeroPage() {
     );
   }
 
-  const previewProps = {
-    headline: hero?.headline || "Your Amazing Headline",
-    gradientHeadline: hero?.gradientHeadline || "Goes Here",
-    subheadline: hero?.subheadline || "Add a compelling subheadline",
-    liveBadge: hero?.liveBadge || { enabled: true, text: "LIVE SALE" },
-    saleBadge: hero?.saleBadge || { enabled: false, text: "" },
-    primaryCTA: hero?.primaryCTA || { text: "Shop Now", link: "/" },
-    secondaryCTA: hero?.secondaryCTA || { text: "Learn More", link: "/" },
-    backgroundImage: hero?.backgroundImage || "",
-    mobileBackgroundImage: hero?.mobileBackgroundImage || "",
-  };
+  // const previewProps = {
+  //   headline: hero?.headline || "Your Amazing Headline",
+  //   gradientHeadline: hero?.gradientHeadline || "Goes Here",
+  //   subheadline: hero?.subheadline || "Add a compelling subheadline",
+  //   liveBadge: hero?.liveBadge || { enabled: true, text: "LIVE SALE" },
+  //   saleBadge: hero?.saleBadge || { enabled: false, text: "" },
+  //   primaryCTA: hero?.primaryCTA || { text: "Shop Now", link: "/" },
+  //   secondaryCTA: hero?.secondaryCTA || { text: "Learn More", link: "/" },
+  //   backgroundImage: hero?.backgroundImage || "",
+  //   mobileBackgroundImage: hero?.mobileBackgroundImage || "",
+  // };
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -288,97 +324,41 @@ export default function SetupHeroPage() {
             <span>Back to Dashboard</span>
           </button>
 
-          <div className="text-right">
-            <h1 className="text-lg sm:text-xl font-semibold text-slate-900">
-              Hero Section (under maintaince)
-            </h1>
-            <p className="text-xs text-slate-500">
-              Preview and edit your homepage hero
-            </p>
-          </div>
-        </div>
-      </header>
-
-      {/* Content */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-8">
-        {/* Compact preview card */}
-        <section>
-          <div
-            className="w-full max-w-3xl mx-auto rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden cursor-pointer group"
-            onClick={() => setIsPreviewOpen(true)}
-          >
-            <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b border-slate-100 bg-slate-50/70">
-              <div>
-                <p className="text-sm font-semibold text-slate-800">
-                  Hero Preview
-                </p>
-                <p className="text-xs text-slate-500">Tap to view fullscreen</p>
-              </div>
-              <button
-                type="button"
-                className="text-xs font-medium text-slate-600 border border-slate-200 rounded-full px-3 py-1 group-hover:border-slate-400"
-              >
-                Open preview
-              </button>
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-base font-semibold text-slate-900">
+                Hero Banners
+              </h2>
+              <p className="text-xs text-slate-500">
+                Manage your homepage banners and campaigns.
+              </p>
             </div>
 
-            <div className="p-3 sm:p-4">
-              <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-slate-900">
-                <HeroLivePreview {...previewProps} />
-                <div className="pointer-events-none absolute bottom-2 right-2 text-[10px] sm:text-xs bg-black/60 text-white px-2 py-1 rounded-full">
-                  Click to expand
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Quick edit button (optional second entrypoint) */}
-        <section className="flex justify-center">
-          <button
-            type="button"
-            onClick={() => setIsEditOpen(true)}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-800 shadow-sm hover:bg-slate-50 hover:border-slate-300"
-          >
-            <Pencil className="w-4 h-4" />
-            Edit Hero Content
-          </button>
-        </section>
-      </main>
-
-      {/* Fullscreen Preview Modal */}
-      {isPreviewOpen && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center px-3 sm:px-6">
-          <div className="relative w-full max-w-5xl max-h-[90vh] rounded-2xl overflow-hidden bg-black shadow-2xl">
-            {/* Close */}
-            <button
-              type="button"
-              onClick={() => setIsPreviewOpen(false)}
-              className="absolute top-3 right-3 z-20 inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            {/* Edit */}
             <button
               type="button"
               onClick={() => {
-                setIsPreviewOpen(false);
+                setEditingHero(null);
                 setIsEditOpen(true);
               }}
-              className="absolute top-3 left-3 z-20 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white border border-white/30 hover:bg-white/20"
+              className="shrink-0 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-black"
             >
-              <Pencil className="w-3 h-3" />
-              Edit Hero
+              + Add Banner
             </button>
-
-            {/* Preview */}
-            <div className="w-full h-full">
-              <HeroLivePreview {...previewProps} />
-            </div>
           </div>
+
+          <HeroBannerList
+            heroes={heroes}
+            onEdit={(hero) => {
+              setEditingHero(hero);
+              setIsEditOpen(true);
+            }}
+            onDelete={(hero) => {
+              // Delete logic comes next
+              console.log("Delete hero:", hero._id);
+            }}
+          />
         </div>
-      )}
+      </header>
 
       {/* Edit Modal with HeroForm */}
       {isEditOpen && (
@@ -394,14 +374,18 @@ export default function SetupHeroPage() {
 
             <div className="mb-4 pr-10">
               <h2 className="text-lg font-semibold text-slate-900">
-                Edit Hero Content
+                {editingHero ? "Edit Hero Banner" : "Add Hero Banner"}
               </h2>
               <p className="text-xs text-slate-500">
-                Update text, badges, CTAs and background image.
+                Manage banner content, images and campaign settings.
               </p>
             </div>
 
-            <HeroForm initial={hero || undefined} onSubmit={handleSubmit} />
+            {/* <HeroForm initial={hero || undefined} onSubmit={handleSubmit} /> */}
+            <HeroForm
+              initial={editingHero || undefined}
+              onSubmit={handleSubmit}
+            />
           </div>
         </div>
       )}
