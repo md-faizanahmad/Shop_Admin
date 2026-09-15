@@ -312,54 +312,60 @@ export default function SetupHeroPage() {
   // };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen ">
       {/* Header */}
-      <header className="sticky top-0 z-30 bg-white/80 backdrop-blur border-b border-slate-200">
-        <button
-          onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to Dashboard</span>
-        </button>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <h2 className="text-base font-semibold text-slate-900">
-                Hero Banners
-              </h2>
-              <p className="text-xs text-slate-500">
-                Manage your homepage banners and campaigns.
-              </p>
-            </div>
+      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back to Dashboard</span>
+          </button>
 
-            <button
-              type="button"
-              onClick={() => {
-                setEditingHero(null);
-                setIsEditOpen(true);
-              }}
-              className="shrink-0 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-black"
-            >
-              + Add Banner
-            </button>
+          <div>
+            <h2 className="text-base font-semibold text-slate-900">
+              Hero Banners
+            </h2>
+            <p className="text-xs text-slate-500">
+              Manage your homepage banners and campaigns.
+            </p>
           </div>
-
-          <HeroBannerList
-            heroes={heroes}
-            onEdit={(hero) => {
-              setEditingHero(hero);
-              setIsEditOpen(true);
-            }}
-            onDelete={(hero) => {
-              // Delete logic comes next
-              console.log("Delete hero:", hero._id);
-            }}
-          />
         </div>
       </header>
 
-      {/* Edit Modal with HeroForm */}
+      {/* Main Content */}
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
+        {/* Add Banner */}
+        <div className="mb-6 flex justify-end">
+          <button
+            type="button"
+            onClick={() => {
+              setEditingHero(null);
+              setIsEditOpen(true);
+            }}
+            className="shrink-0 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-black transition"
+          >
+            + Add Banner
+          </button>
+        </div>
+
+        {/* Banner List */}
+        <HeroBannerList
+          heroes={heroes}
+          onEdit={(hero) => {
+            setEditingHero(hero);
+            setIsEditOpen(true);
+          }}
+          onDelete={(hero) => {
+            // Delete logic comes next
+            console.log("Delete hero:", hero._id);
+          }}
+        />
+      </main>
+
+      {/* Edit Modal */}
       {isEditOpen && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center px-3 sm:px-6">
           <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-5 sm:p-6 shadow-2xl">
@@ -380,7 +386,6 @@ export default function SetupHeroPage() {
               </p>
             </div>
 
-            {/* <HeroForm initial={hero || undefined} onSubmit={handleSubmit} /> */}
             <HeroForm
               initial={editingHero || undefined}
               onSubmit={handleSubmit}

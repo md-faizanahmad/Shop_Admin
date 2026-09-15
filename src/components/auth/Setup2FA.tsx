@@ -322,7 +322,7 @@ export default function Setup2FA() {
   };
 
   return (
-    <div className="min-h-screen px-4 py-6 flex flex-col items-center bg-slate-100">
+    <div className="min-h-screen px-4 py-6 flex flex-col items-center ">
       {/* Breadcrumbs row */}
       <div className="w-full max-w-5xl mb-4">
         <Breadcrumbs
@@ -366,7 +366,7 @@ export default function Setup2FA() {
 
           {/* Header inside card */}
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-sky-600">
               <ShieldCheck size={22} />
             </div>
             <div>
@@ -426,7 +426,7 @@ export default function Setup2FA() {
                 </span>
                 <button
                   type="button"
-                  className="text-xs text-blue-600 hover:text-blue-700"
+                  className="text-xs text-sky-600 hover:text-sky-700"
                   onClick={() => setShowKey((prev) => !prev)}
                 >
                   {showKey ? "Hide" : "Show"}
