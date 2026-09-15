@@ -257,9 +257,9 @@ const Header = ({ onToggleSidebar }: HeaderProps) => {
               <p className="text-sm font-medium text-gray-900">
                 {admin?.name || "Admin"}
               </p>
-              <p className="text-xs text-gray-500">Administrator</p>
+              <p className="text-xs text-green-600 font-bold">Administrator</p>
             </div>
-            <div className="w-10 h-10 rounded-full bg-linear-to-br from-sky-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-lg">
+            <div className="w-10 h-10 rounded-full bg-linear-to-br from-red-500 to-sky-600 flex items-center justify-center text-white font-bold shadow-lg">
               {admin?.name?.charAt(0).toUpperCase() || "A"}
             </div>
           </div>
