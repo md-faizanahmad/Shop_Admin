@@ -15,9 +15,6 @@ export default function Login() {
   const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const googleIcon =
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/2560px-Google_2015_logo.svg.png";
-
   // 2FA state
   const [requires2FA, setRequires2FA] = useState<boolean>(false);
   const [tempEmail, setTempEmail] = useState<string>("");
@@ -139,16 +136,18 @@ export default function Login() {
         </form>
 
         {/* Footer */}
-        <p className="text-center text-[12px]  text-gray-500 ">
+        <p className="text-center text-[12px] text-gray-500">
           Protected by
-          <img
-            src={googleIcon}
-            width={40}
-            height={40}
-            alt="Google"
-            className="m-auto mt-2"
-          />
-          Authenticator 2FA/MFA 🔐
+          <span className="flex items-center justify-center gap-1 mt-2">
+            <img
+              src="/google.png"
+              width={20}
+              height={20}
+              alt="Google Authenticator"
+              className="object-contain"
+            />
+            Authenticator 2FA/MFA 🔐
+          </span>
         </p>
       </div>
     </div>
