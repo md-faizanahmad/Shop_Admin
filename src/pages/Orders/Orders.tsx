@@ -4,114 +4,12 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { format } from "date-fns";
-import {
-  Search,
-  Package,
-  Clock,
-  Truck,
-  CheckCircle,
-  XCircle,
-  FileText,
-  Settings,
-} from "lucide-react";
+import { Search, Package, FileText, Settings } from "lucide-react";
 
 import type { Order } from "@/types/order";
+import { getStatusBadge, statusFilters } from "@/config/orderStatus";
 
 const API = import.meta.env.VITE_API_URL;
-
-interface FilterOption {
-  value: string;
-  label: string;
-  color: string;
-  bg: string;
-  icon: React.ReactNode;
-}
-
-const statusFilters: FilterOption[] = [
-  {
-    value: "all",
-    label: "All Orders",
-    color: "gray",
-    bg: "bg-gray-100",
-    icon: <Package className="w-4 h-4" />,
-  },
-  {
-    value: "pending",
-    label: "Pending",
-    color: "yellow",
-    bg: "bg-yellow-100",
-    icon: <Clock className="w-4 h-4" />,
-  },
-  {
-    value: "processing",
-    label: "Processing",
-    color: "blue",
-    bg: "bg-blue-100",
-    icon: <Clock className="w-4 h-4" />,
-  },
-  {
-    value: "shipping",
-    label: "Shipped",
-    color: "purple",
-    bg: "bg-purple-100",
-    icon: <Truck className="w-4 h-4" />,
-  },
-  {
-    value: "delivered",
-    label: "Delivered",
-    color: "green",
-    bg: "bg-green-100",
-    icon: <CheckCircle className="w-4 h-4" />,
-  },
-  {
-    value: "cancelled",
-    label: "Cancelled",
-    color: "red",
-    bg: "bg-red-100",
-    icon: <XCircle className="w-4 h-4" />,
-  },
-];
-
-const getStatusBadge = (status: string) => {
-  const map: Record<
-    string,
-    { color: string; bg: string; icon: React.ReactNode }
-  > = {
-    pending: {
-      color: "text-yellow-700",
-      bg: "bg-yellow-100",
-      icon: <Clock className="w-3.5 h-3.5" />,
-    },
-    processing: {
-      color: "text-blue-700",
-      bg: "bg-blue-100",
-      icon: <Clock className="w-3.5 h-3.5" />,
-    },
-    shipping: {
-      color: "text-purple-700",
-      bg: "bg-purple-100",
-      icon: <Truck className="w-3.5 h-3.5" />,
-    },
-    delivered: {
-      color: "text-green-700",
-      bg: "bg-green-100",
-      icon: <CheckCircle className="w-3.5 h-3.5" />,
-    },
-    cancelled: {
-      color: "text-red-700",
-      bg: "bg-red-100",
-      icon: <XCircle className="w-3.5 h-3.5" />,
-    },
-  };
-  const packageIcon = <Package className="w-3.5 h-3.5" />;
-  return (
-    map[status] || {
-      color: "text-gray-700",
-      bg: "bg-gray-100",
-      icon: packageIcon,
-    }
-  );
-};
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -146,7 +44,7 @@ export default function OrdersPage() {
         (o) =>
           o.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
           o.userEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          o._id.includes(searchTerm)
+          o._id.includes(searchTerm),
       );
     }
 
@@ -175,7 +73,7 @@ export default function OrdersPage() {
             placeholder="Search by name, email, or order ID..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+            className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition"
           />
         </div>
 
@@ -187,7 +85,7 @@ export default function OrdersPage() {
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all ${
                 selectedStatus === filter.value
                   ? `${filter.bg} text-${filter.color}-700 ring-2 ring-${filter.color}-300`
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  : "bg-gray-100 text-green-700 hover:bg-gray-200"
               }`}
             >
               {filter.icon}
@@ -198,7 +96,7 @@ export default function OrdersPage() {
                   {
                     filteredOrders.filter(
                       (o) =>
-                        selectedStatus === "all" || o.status === selectedStatus
+                        selectedStatus === "all" || o.status === selectedStatus,
                     ).length
                   }
                   )
@@ -283,7 +181,7 @@ export default function OrdersPage() {
                 <div className="flex gap-3 mt-5 pt-4 border-t border-gray-100">
                   <a
                     href={`/dashboard/orders/manage/${order._id}`}
-                    className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-2.5 rounded-xl hover:bg-blue-700 transition font-medium"
+                    className="flex-1 flex items-center justify-center gap-2 bg-sky-600 text-white py-2.5 rounded-xl hover:bg-sky-700 transition font-medium"
                   >
                     <Settings className="w-4 h-4" />
                     Manage
