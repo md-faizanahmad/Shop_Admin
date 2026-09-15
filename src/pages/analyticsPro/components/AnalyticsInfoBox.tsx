@@ -14,7 +14,7 @@ export default function AnalyticsInfoAccordion() {
         className="w-full flex items-center justify-between p-5 rounded-2xl cursor-pointer"
       >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow">
+          <div className="w-10 h-10 rounded-xl bg-red-600 text-white flex items-center justify-center shadow">
             <Info className="w-6 h-6" />
           </div>
 
