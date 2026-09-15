@@ -212,7 +212,7 @@ const Header = ({ onToggleSidebar }: HeaderProps) => {
           {/* Mobile Menu */}
           <button
             onClick={onToggleSidebar}
-            className="p-2 rounded-xl hover:bg-gray-100 transition lg:hidden"
+            className="p-2  transition lg:hidden"
             aria-label="Open menu"
           >
             <Menu className="w-6 h-6 text-gray-700" />
