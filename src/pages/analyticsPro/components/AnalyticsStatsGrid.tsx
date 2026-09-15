@@ -78,7 +78,7 @@ export default function AnalyticsStatsGrid({
         previous={prevProfit ? formatINR(prevProfit) : undefined}
         trend={profitTrend}
         icon={<TrendingUp className="w-6 h-6" />}
-        iconBGolor="#acd409"
+        iconBGolor="#122ca3"
       />
 
       {/* Units */}
