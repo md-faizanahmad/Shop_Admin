@@ -39,7 +39,7 @@ export default function StatCard({
           <p className="text-[13px] font-medium text-gray-600">{title}</p>
 
           <div className="mt-2 flex items-baseline gap-2 flex-wrap">
-            <p className="text-2xl font-bold text-[#4f46e5]">{value}</p>
+            <p className="text-2xl font-bold text-[#b7231d]">{value}</p>
 
             {previous && (
               <p className="text-sm text-gray-500 whitespace-nowrap">

@@ -315,15 +315,14 @@ export default function SetupHeroPage() {
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
       <header className="sticky top-0 z-30 bg-white/80 backdrop-blur border-b border-slate-200">
+        <button
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back to Dashboard</span>
+        </button>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to Dashboard</span>
-          </button>
-
           <div className="flex items-center justify-between gap-3">
             <div>
               <h2 className="text-base font-semibold text-slate-900">
