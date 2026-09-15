@@ -19,7 +19,7 @@ export default function ProfitTrendChart({ data }: Props) {
   return (
     <div className="bg-white rounded-2xl shadow-xl border p-6">
       <h2 className="text-2xl font-bold mb-5 flex items-center gap-3">
-        <Calendar className="w-7 h-7 text-blue-600" />
+        <Calendar className="w-7 h-7 text-sky-600" />
         Profit Trend (12 Months)
       </h2>
 
