@@ -73,13 +73,17 @@ export default function Login() {
       <div className="w-full max-w-sm rounded-2xl bg-gray-50 backdrop-blur-2xl  border border-gray-200  shadow-xl p-8 space-y-8">
         {/* Branding / Logo */}
         <div className="text-center space-y-2">
-          <div className="mx-auto h-14 w-14 rounded-xl bg-linear-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
-            A
+          <div className="mx-auto h-14 w-14  flex items-center justify-center ">
+            <img
+              src="/brand.png"
+              alt="Brand"
+              className="h-10 w-10 object-contain"
+            />
           </div>
-          <h1 className="text-2xl font-semibold text-gray-900 ">
-            Admin Access
-          </h1>
-          <p className="text-sm text-gray-500 ">
+
+          <h1 className="text-2xl font-semibold text-gray-900">Admin Access</h1>
+
+          <p className="text-sm text-gray-500">
             Sign in to continue to dashboard
           </p>
         </div>
