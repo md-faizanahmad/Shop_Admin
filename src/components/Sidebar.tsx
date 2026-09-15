@@ -257,11 +257,13 @@ export default function Sidebar({ isOpen, onToggle, onClose }: SidebarProps) {
         <div className="sticky top-0 z-20 bg-white border-b border-gray-100">
           <div className="flex items-center justify-between p-5">
             <Link to="/dashboard" className="flex items-center gap-3">
-              <div className="p-3 bg-linear-to-br from-sky-500 to-blue-600 rounded-2xl shadow-lg">
-                <Sparkles className="w-7 h-7 text-white" />
-              </div>
+              <img
+                src="/brand.png"
+                alt="AZ Shop"
+                className="w-10 h-10 object-contain"
+              />
               <div>
-                <h2 className="text-xl font-bold bg-linear-to-r from-blue-600 to-sky-600 bg-clip-text text-transparent">
+                <h2 className="text-xl font-bold bg-linear-to-r from-red-600 to-sky-600 bg-clip-text text-transparent">
                   AZ Shop
                 </h2>
                 <p className="text-xs text-gray-500">Admin Panel</p>
@@ -271,7 +273,7 @@ export default function Sidebar({ isOpen, onToggle, onClose }: SidebarProps) {
             {/* X Close Button - Works perfectly now */}
             <button
               onClick={onToggle}
-              className="p-3 rounded-xl hover:bg-gray-100 transition-colors lg:hidden"
+              className="p-3  transition-colors lg:hidden"
               aria-label="Close sidebar"
             >
               <X className="w-6 h-6 text-gray-600" />
@@ -305,7 +307,7 @@ export default function Sidebar({ isOpen, onToggle, onClose }: SidebarProps) {
                     group relative flex items-center gap-4 px-3 py-3 rounded-2xl transition-all duration-300
                     ${
                       isActive
-                        ? "bg-linear-to-r from-blue-600 to-sky-600 text-white shadow-lg"
+                        ? "bg-sky-700 text-white shadow-lg"
                         : "text-gray-700 hover:bg-gray-50 hover:shadow-sm"
                     }
                   `}
