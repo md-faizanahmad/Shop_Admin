@@ -67,7 +67,7 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-sky-100 ">
-      <div className="w-full max-w-sm rounded-2xl bg-gray-50 backdrop-blur-2xl  border border-gray-200  shadow-xl p-8 space-y-8">
+      <div className="w-full max-w-sm rounded-sm bg-white/70 backdrop-blur-2xl border border-white/50    shadow-xl p-8 space-y-8">
         {/* Branding / Logo */}
         <div className="text-center space-y-2">
           <div className="mx-auto h-14 w-14  flex items-center justify-center ">
@@ -98,7 +98,7 @@ export default function Login() {
               placeholder="example@domain.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-2 w-full rounded-lg border border-gray-300  bg-gray-50  px-4 py-3 text-gray-900  focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition"
+              className="mt-2 w-full rounded-sm border border-gray-200 bg-white px-4 py-3 text-gray-900 placeholder:text-gray-400 outline-none transition focus:border-red-900 focus:ring-2 focus:ring-gray-900/10"
             />
           </div>
 
@@ -113,13 +113,12 @@ export default function Login() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-lg border border-gray-300  bg-gray-50  px-4 py-3 text-gray-900  focus:ring-2 focus:ring-blue-600 transition pr-11"
+                className="w-full rounded-sm border border-gray-200 bg-white px-4 py-3 pr-11 text-gray-900 placeholder:text-gray-400 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-blue-500/20"
               />
-
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-4 flex items-center text-gray-500  hover:text-gray-700 "
+                className="absolute inset-y-0 right-4 flex items-center text-gray-500 hover:text-gray-700"
               >
                 {showPassword ? <EyeOff /> : <Eye />}
               </button>
@@ -129,7 +128,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 transition-all shadow-sm hover:shadow-lg active:scale-[0.98]"
+            className="w-full rounded-lg bg-sky-500 hover:bg-sky-600 disabled:bg-sky-400 text-white font-medium py-3 transition-all shadow-sm hover:shadow-lg active:scale-[0.98]"
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
