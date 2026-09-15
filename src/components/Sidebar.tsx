@@ -258,8 +258,8 @@ export default function Sidebar({ isOpen, onToggle, onClose }: SidebarProps) {
           <div className="flex items-center justify-between p-5">
             <Link to="/dashboard" className="flex items-center gap-3">
               <img
-                src="/brand.png"
-                alt="AZ Shop"
+                src="./brand.png"
+                alt="brand-img"
                 className="w-10 h-10 object-contain"
               />
               <div>

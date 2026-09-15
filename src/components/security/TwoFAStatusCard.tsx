@@ -25,24 +25,24 @@ export default function TwoFAStatusCard() {
   }, []);
 
   return (
-    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 flex items-center justify-between">
+    <div className="bg-white  border border-gray-200  rounded-xl p-5 flex items-center justify-between">
       <div className="flex items-center gap-3">
         {enabled ? (
           <CheckCircle2 className="text-green-500" size={26} />
         ) : (
-          <ShieldCheck className="text-blue-500" size={26} />
+          <ShieldCheck className="text-sky-500" size={26} />
         )}
 
         <div>
-          <h3 className="text-base font-semibold text-gray-900 dark:text-white">
+          <h3 className="text-base font-semibold text-gray-900 ">
             Two-Factor Authentication
           </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-gray-500 ">
             {loading
               ? "Checking security status..."
               : enabled
-              ? "2FA enabled on this account"
-              : "Enable 2FA for extra login protection"}
+                ? "2FA enabled on this account"
+                : "Enable 2FA for extra login protection"}
           </p>
         </div>
       </div>
@@ -51,10 +51,10 @@ export default function TwoFAStatusCard() {
         <button
           onClick={() =>
             navigate(
-              enabled ? "/dashboard/security-center" : "/dashboard/2fa-setup"
+              enabled ? "/dashboard/security-center" : "/dashboard/2fa-setup",
             )
           }
-          className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-sm font-medium transition"
+          className="px-4 py-2 rounded-lg bg-gray-100  hover:bg-gray-200  text-sm font-medium transition"
         >
           {enabled ? "Manage" : "Enable"}
         </button>
