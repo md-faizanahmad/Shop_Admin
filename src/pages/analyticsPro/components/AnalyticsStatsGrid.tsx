@@ -7,9 +7,7 @@ interface Props {
   totalRevenue: number;
   totalProfit: number;
   profitMargin: string;
-
   totalUnits: number;
-
   // OPTIONAL – if backend returns historical values
   prevInvestment?: number;
   prevRevenue?: number;
@@ -21,17 +19,14 @@ export default function AnalyticsStatsGrid({
   totalInvestment,
   totalRevenue,
   totalProfit,
-
   totalUnits,
-
   prevInvestment,
   prevRevenue,
   prevProfit,
   prevUnits,
 }: Props) {
-  // -----------------------------
   // Auto compute trends (optional)
-  // -----------------------------
+
   const calcTrend = (current?: number, prev?: number) => {
     if (!prev || prev === 0 || !current) return undefined;
     return +(((current - prev) / prev) * 100).toFixed(2);
