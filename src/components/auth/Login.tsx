@@ -75,6 +75,8 @@ export default function Login() {
               src="https://res.cloudinary.com/daqb5wglu/image/upload/v1794228392/brand_jurqsj.png"
               alt="Brand"
               className="h-10 w-10 object-contain"
+              width={40}
+              height={40}
             />
           </div>
 
@@ -86,12 +88,19 @@ export default function Login() {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleLogin} className="space-y-5">
+        <form onSubmit={handleLogin} className="space-y-5" aria-busy={loading}>
           <div>
-            <label className="block text-sm font-medium text-gray-700 ">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 "
+            >
               Email
             </label>
             <input
+              id="email"
+              name="email"
+              autoComplete="username"
+              disabled={loading}
               type="email"
               required
               autoFocus
@@ -103,11 +112,18 @@ export default function Login() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 ">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 "
+            >
               Password
             </label>
             <div className="relative mt-2">
               <input
+                id="password"
+                name="password"
+                autoComplete="current-password"
+                disabled={loading}
                 type={showPassword ? "text" : "password"}
                 required
                 placeholder="••••••••"
@@ -119,6 +135,9 @@ export default function Login() {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute inset-y-0 right-4 flex items-center text-gray-500 hover:text-gray-700"
+                disabled={loading}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-pressed={showPassword}
               >
                 {showPassword ? <EyeOff /> : <Eye />}
               </button>
