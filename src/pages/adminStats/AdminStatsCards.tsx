@@ -1,5 +1,5 @@
 // AdminStatsCards.tsx (replace existing)
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { format } from "date-fns";
 import {
   Package,
@@ -12,59 +12,12 @@ import {
   Layers,
   Box,
 } from "lucide-react";
-import axios from "axios";
 import StatCard from "./StatCard";
-
-interface TopCategory {
-  _id: string;
-  name: string;
-  slug?: string;
-  image?: string | null;
-  subCount: number;
-}
-
-interface Stats {
-  totalOrders: number;
-  todayOrders: number;
-  pending: number;
-  processing: number;
-  shipped: number;
-  delivered: number;
-  cancelled: number;
-  totalProducts: number;
-  // new fields from backend:
-  totalMainCategories?: number;
-  totalSubcategories?: number;
-  categoriesWithSubCount?: TopCategory[];
-  topCategoriesBySubcount?: TopCategory[];
-  totalUsers: number;
-}
+import { useAdminStats } from "./useAdminStats";
 
 export default function AdminStatsCards() {
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  const API_URL = import.meta.env.VITE_API_URL;
   const today = useMemo(() => format(new Date(), "d MMM"), []);
-
-  const fetchStats = useCallback(async () => {
-    try {
-      const res = await axios.get(`${API_URL}/v1/admin/dashboard/stats`, {
-        withCredentials: true,
-      });
-      setStats(res.data.data ?? null);
-    } catch (err) {
-      console.error("fetchStats error:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, [API_URL]);
-
-  useEffect(() => {
-    fetchStats();
-    const interval = setInterval(fetchStats, 30000);
-    return () => clearInterval(interval);
-  }, [fetchStats]);
+  const { stats, loading } = useAdminStats();
 
   // Skeleton Loader
   const SkeletonCard = () => (
@@ -151,7 +104,7 @@ export default function AdminStatsCards() {
         iconColor: "text-green-600",
       },
     ],
-    [stats, today]
+    [stats, today],
   );
 
   if (loading) {
