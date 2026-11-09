@@ -17,7 +17,8 @@ export default function Login() {
 
   // 2FA state
   const [requires2FA, setRequires2FA] = useState<boolean>(false);
-  const [tempEmail, setTempEmail] = useState<string>("");
+
+  // const [tempEmail, setTempEmail] = useState<string>("");
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,7 +29,7 @@ export default function Login() {
 
       if (data.requires2FA) {
         setRequires2FA(true);
-        setTempEmail(email);
+        // setTempEmail(email);
         toast.info("Enter your 6-digit Authenticator code");
         return;
       }
@@ -43,7 +44,6 @@ export default function Login() {
     }
   };
 
-  // If 2FA step is active → render sleek OTP screen instead of login form
   if (requires2FA) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-sky-100 ">
@@ -55,7 +55,7 @@ export default function Login() {
             Secure login verification required
           </p>
 
-          <TwoFACode email={tempEmail} />
+          <TwoFACode email={email} />
 
           <p className="text-center text-[11px] text-gray-500 ">
             Protected by Google Authenticator 2FA 🔐
