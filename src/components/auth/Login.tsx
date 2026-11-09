@@ -72,7 +72,7 @@ export default function Login() {
         <div className="text-center space-y-2">
           <div className="mx-auto h-14 w-14  flex items-center justify-center ">
             <img
-              src="/brand.png"
+              src="https://res.cloudinary.com/daqb5wglu/image/upload/v1794228392/brand_jurqsj.png"
               alt="Brand"
               className="h-10 w-10 object-contain"
             />
@@ -139,7 +139,7 @@ export default function Login() {
           Protected by
           <span className="flex items-center justify-center gap-1 mt-2">
             <img
-              src="/google.png"
+              src="https://res.cloudinary.com/daqb5wglu/image/upload/v1794228387/google_w6aul9.png"
               width={20}
               height={20}
               alt="Google Authenticator"
