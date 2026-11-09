@@ -190,7 +190,7 @@
 //   );
 // }
 
-///////////////////////////////////////Update wit image
+/////////////////////////////////////// Update wit image
 // CategoryRow.tsx
 import type { Category } from "@/types/category";
 import {
